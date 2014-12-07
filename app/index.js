@@ -6,25 +6,35 @@ var yosay = require('yosay');
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
     this.pkg = require('../package.json');
+    var Jolicode = '\n        ' + chalk.yellow('##') + '       ##            ##  ##   #######                   ##                ' + chalk.yellow('##') + '  ' + chalk.yellow('##') + '  \n      ' + chalk.yellow('##') + '         ##            ##      ##     ##                  ##               ' + chalk.yellow('##') + '    ' + chalk.yellow('##') + '  \n     ' + chalk.yellow('##') + '          ##   ######   ##  ##  ##          ######    #######   ######     ' + chalk.yellow('##') + '      ' + chalk.yellow('##') + '  \n     ' + chalk.yellow('##') + '          ##  ##    ##  ##  ##  ##         ##    ##  ##    ##  ########   ' + chalk.yellow('##') + '       ' + chalk.yellow('##') + '  \n      ' + chalk.yellow('##') + '  ##    ###  ##    ##  ##  ##  ##     ##  ##    ##  ##    ##  ##        ' + chalk.yellow('##') + '       ' + chalk.yellow('##') + '  \n       ' + chalk.yellow('##') + '   #####     ######   ##  ##   #######    ######    #######   ######  ' + chalk.yellow('##') + '       ' + chalk.yellow('##');
+    var JolicodeDesc = '\n\n   A Yeoman generator for the Symfony2 framework\n\n   Created by ' + chalk.yellow('@JoliCode ') + ' & ' + chalk.blue('@lbrunet_com') + '\n   ' + chalk.cyan('http://jolicode.com/') + '\n';
+    this.log(Jolicode);
+    this.log(JolicodeDesc);
   },
 
-  prompting: function () {
+  askSymfonyStandard: function () {
     var done = this.async();
 
-    // Have Yeoman greet the user.
-    this.log(yosay(
-      'Welcome to the groundbreaking' + chalk.red('Jolistarter') + ' generator!'
-    ));
+    this.SymfonyStandardDistribution = {
+      username: 'symfony',
+      repository: 'symfony-standard',
+      commit: '2.6'
+    };
 
     var prompts = [{
       type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
+      name: 'symfonyStandard',
+      message: 'Would you like to use the Symfony "Standard Edition" distribution ' + this.SymfonyStandardDistribution.commit,
       default: true
     }];
 
-    this.prompt(prompts, function (props) {
-      this.someOption = props.someOption;
+    this.prompt(prompts, function (answers) {
+
+      if (answers.symfonyStandard) {
+        this.symfonyDistribution = this.SymfonyStandardDistribution;
+      } else {
+        this.symfonyDistribution === null;
+      }
 
       done();
     }.bind(this));
