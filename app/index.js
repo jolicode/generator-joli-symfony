@@ -2,6 +2,7 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var path = require('path');
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -33,11 +34,60 @@ module.exports = yeoman.generators.Base.extend({
       if (answers.symfonyStandard) {
         this.symfonyDistribution = this.SymfonyStandardDistribution;
       } else {
-        this.symfonyDistribution === null;
+        this.symfonyDistribution = null;
       }
 
       done();
     }.bind(this));
+  },
+
+  askSymfonyCustom: function () {
+    if (this.symfonyDistribution === null) {
+      var done = this.async();
+
+      console.log('Please provide GitHub details of the Symfony distribution you would like to use.');
+      console.log('e.g. http://github.com/symfony/symfony-standard/tree/[commit].');
+
+      var prompts = [{
+        type: 'list',
+        name: 'symfonyCommit',
+        message: 'Commit (commit/branch/tag)',
+        default: '2.6',
+        choices: ['2.3', '2.5', '2.6']
+      }];
+
+      this.prompt(prompts, function (answers) {
+
+        var repo = 'https://github.com/' + 'symfony' + '/' + 'symfony-standard' + '/tree/' + answers.symfonyCommit;
+        console.log('Thanks! I\'ll use ' + repo);
+        console.log('');
+
+        this.symfonyDistribution = {
+          username: 'symfony',
+          repository: 'symfony-standard',
+          commit: answers.symfonyCommit
+        };
+
+        done();
+      }.bind(this));
+    }
+  },
+
+  symfonyBase: function () {
+      var done = this.async();
+      var appPath = this.destinationRoot();
+
+      this.remote(
+        this.symfonyDistribution.username,
+        this.symfonyDistribution.repository,
+        this.symfonyDistribution.commit,
+        function (err, remote) {
+          if (err) {
+            return done(err);
+          }
+          remote.directory('.', path.join(appPath, '.'));
+          done();
+        });
   },
 
   writing: {
