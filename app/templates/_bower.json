@@ -1,6 +1,7 @@
 {
-  "name": "package",
-  "version": "0.0.0",
-  "dependencies": {}
+  "name": "<%= _.slugify(appname) %>",
+  "version": "0.0.1",
+  "dependencies": {
+    <% if (bowerStandard) { %>"bootstrap": "https://github.com/twbs/bootstrap-sass/archive/v3.3.0.tar.gz"<% } %>
+  }
 }
-

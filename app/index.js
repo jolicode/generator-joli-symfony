@@ -11,6 +11,7 @@ module.exports = yeoman.generators.Base.extend({
     var JolicodeDesc = '\n\n   A Yeoman generator for the Symfony2 framework\n\n   Created by ' + chalk.yellow('@JoliCode ') + ' & ' + chalk.blue('@lbrunet_com') + '\n   ' + chalk.cyan('http://jolicode.com/') + '\n';
     this.log(Jolicode);
     this.log(JolicodeDesc);
+    this.bowerStandard = null; // remove
   },
 
   askSymfonyStandard: function () {
@@ -73,6 +74,21 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
+  askToolsExtension: function () {
+    var done = this.async();
+    var prompts = [{
+        type: 'list',
+        name: 'toolsExtension',
+        message: 'Which tools would you like to use ?',
+        default: 'gulp',
+        choices: ['grunt', 'gulp']
+    }];
+    this.prompt(prompts, function (answers) {
+      this.toolsExtension = answers.toolsExtension;
+      done();
+    }.bind(this));
+  },
+
   symfonyBase: function () {
       var done = this.async();
       var appPath = this.destinationRoot();
@@ -96,10 +112,11 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('_package.json'),
         this.destinationPath('package.json')
       );
-      this.fs.copy(
-        this.templatePath('_bower.json'),
-        this.destinationPath('bower.json')
-      );
+      // this.fs.copy(
+      //   this.templatePath('_bower.json'),
+      //   this.destinationPath('bower.json')
+      // );
+      this.template('_bower.json', 'bower.json');
     },
 
     projectfiles: function () {

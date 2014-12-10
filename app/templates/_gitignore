@@ -1,0 +1,23 @@
+._*
+.DS_Store
+.vagrant
+
+# Symfony
+/web/bundles/
+/app/bootstrap.php.cache
+/app/cache/*
+/app/config/parameters.yml
+/app/logs/*
+/build/
+/vendor/
+/bin/
+/composer.phar
+
+# Yeoman
+node_modules
+.tmp
+.sass-cache
+web/libs
+web/dist
+web/css
+app/dist
