@@ -1,5 +1,36 @@
 {
-  "name": "package",
-  "version": "0.0.0",
-  "dependencies": {}
+  "name": "<%= _.slugify(appname) %>",
+  "version": "0.0.1",
+  "author": "Laurent Brunet <lbrunet@jolicode.com>",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    <% if (toolsExtension === 'grunt') { %>
+    "grunt": "~0.4.1",
+    <% if (gruntcompass) { %>"grunt-contrib-watch": "~0.4.4",<% } %>
+    <% if (gruntCopy) { %>"grunt-contrib-copy": "~0.4.1",<% } %>
+    <% if (gruntcoffee) { %>"grunt-contrib-coffee": "~0.4.0",<% } %>
+    <% if (gruntcoffee || gruntTypescript) { %>"grunt-contrib-uglify": "~0.2.2",<% } %>
+    <% if (gruntTypescript) { %>"grunt-typescript": "~0.4.4",<% } %>
+    <% if (gruntSass) { %>"grunt-contrib-sass": "^0.7.3",<% } %>
+    <% if (gruntcompass) { %>"grunt-contrib-compass": "^0.7.2",<% } %>
+    <% if (gruntcompass || gruntSass) { %>"grunt-contrib-cssmin": "^0.9.0",<% } %>
+    <% if (toolsExtension === 'grunt') { %>"load-grunt-tasks": "~0.1.0"<% } %>
+    <% } %>
+    <% if (toolsExtension === 'gulp') { %>
+      "gulp": "^3.8.8",
+    <% if (gulpRubySass) { %>"gulp-ruby-sass": "^0.7.1",<% } %>
+    <% if (gulpRubySass) { %>"gulp-minify-css": "^0.3.10",<% } %>
+    <% if (gulpRubySass) { %>"gulp-plumber": "^0.6.6",<% } %>
+    <% if (gulpRubySass) { %>"gulp-rename": "^1.2.0",<% } %>
+    <% if (gulpRubySass) { %>"gulp-watch": "^1.1.0",<% } %>
+    <% if (gulpConcat) { %>"gulp-concat": "^2.4.1",<% } %>
+    <% if (gulpCopy) { %>"gulp-copy": "0.0.2",<% } %>
+    <% if (gulpConcat) { %>"gulp-uglify": "^1.0.1",<% } %>
+    <% if (toolsExtension === 'gulp') { %>"gulp-load-plugins": "^0.7.0"<% } %>
+    <% } %>
+  }
 }

@@ -11,7 +11,6 @@ module.exports = yeoman.generators.Base.extend({
     var JolicodeDesc = '\n\n   A Yeoman generator for the Symfony2 framework\n\n   Created by ' + chalk.yellow('@JoliCode ') + ' & ' + chalk.blue('@lbrunet_com') + '\n   ' + chalk.cyan('http://jolicode.com/') + '\n';
     this.log(Jolicode);
     this.log(JolicodeDesc);
-    this.bowerStandard = null; // remove
   },
 
   askSymfonyStandard: function () {
@@ -89,11 +88,121 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  symfonyBase: function () {
+  askGruntCustom: function () {
+    if (this.toolsExtension === 'grunt') {
       var done = this.async();
-      var appPath = this.destinationRoot();
 
-      this.remote(
+      var prompts = [{
+        type: 'checkbox',
+        name: 'gruntCustom',
+        message: 'Personnalisez le fichier Gruntfile',
+        choices: [
+          {
+            name: 'grunt-compass',
+            value: 'gruntCompass',
+            checked: true
+          },
+          {
+            name: 'grunt-coffee',
+            value: 'gruntCoffee',
+            checked: false
+          },
+          {
+            name: 'grunt-sass',
+            value: 'gruntSass',
+            checked: false
+          },
+          {
+            name: 'grunt-typescript',
+            value: 'gruntTypescript',
+            checked: true
+          },
+          {
+            name: 'grunt-copy',
+            value: 'gruntCopy',
+            checked: true
+          }
+        ]
+      }];
+
+      this.prompt(prompts, function (answers) {
+        function hasFeature(feat) {
+          return answers.gruntCustom.indexOf(feat) !== -1;
+        }
+
+        this.gruntcompass = hasFeature('gruntCompass');
+        this.gruntcoffee = hasFeature('gruntCoffee');
+        this.gruntSass = hasFeature('gruntSass');
+        this.gruntTypescript = hasFeature('gruntTypescript');
+        this.gruntCopy = hasFeature('gruntCopy');
+
+        done();
+      }.bind(this));
+    }
+  },
+
+  askGulpCustom: function () {
+    if (this.toolsExtension === 'gulp') {
+      var done = this.async();
+
+      var prompts = [{
+        type: 'checkbox',
+        name: 'gulpCustom',
+        message: 'Personnalisez le fichier Gulpfile',
+        choices: [
+          {
+            name: 'gulp-ruby-sass',
+            value: 'gulpRubySass',
+            checked: true
+          },
+          {
+            name: 'gulp-copy',
+            value: 'gulpCopy',
+            checked: false
+          },
+          {
+            name: 'gulp-concat',
+            value: 'gulpConcat',
+            checked: false
+          }
+        ]
+      }];
+
+      this.prompt(prompts, function (answers) {
+        function hasFeature(feat) {
+          return answers.gulpCustom.indexOf(feat) !== -1;
+        }
+
+        this.gulpRubySass = hasFeature('gulpRubySass');
+        this.gulpCopy = hasFeature('gulpCopy');
+        this.gulpConcat = hasFeature('gulpConcat');
+
+        done();
+      }.bind(this));
+    }
+  },
+
+  askBowerStandard: function () {
+    var done = this.async();
+
+    var prompts = [{
+      type: 'confirm',
+      name: 'bowerStandard',
+      message: 'Would you like to use the "BootStrap 3.3" ',
+      default: true
+    }];
+
+    this.prompt(prompts, function (answers) {
+      this.bowerStandard = answers.bowerStandard;
+      done();
+    }.bind(this));
+  },
+
+  symfonyBase: function () {
+    var done = this.async();
+    var appPath = this.destinationRoot();
+
+    this.remote(
         this.symfonyDistribution.username,
         this.symfonyDistribution.repository,
         this.symfonyDistribution.commit,
@@ -103,20 +212,28 @@ module.exports = yeoman.generators.Base.extend({
           }
           remote.directory('.', path.join(appPath, '.'));
           done();
-        });
+        }
+    );
   },
 
   writing: {
     app: function () {
+      if (this.toolsExtension === 'grunt') {
+        this.template('_Gruntfile.js', 'Gruntfile.js');
+      }
+      if (this.toolsExtension === 'gulp') {
+        this.template('_Gulpfile.js', 'Gulpfile.js');
+      }
       this.fs.copy(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json')
+        this.templatePath('_gitignore'),
+        this.destinationPath('.gitignore')
       );
-      // this.fs.copy(
-      //   this.templatePath('_bower.json'),
-      //   this.destinationPath('bower.json')
-      // );
+      this.fs.copy(
+        this.templatePath('_bowerrc'),
+        this.destinationPath('.bowerrc')
+      );
       this.template('_bower.json', 'bower.json');
+      this.template('_package.json', 'package.json');
     },
 
     projectfiles: function () {
