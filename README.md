@@ -1,47 +1,74 @@
-# generator-jolistarter [![Build Status](https://secure.travis-ci.org/lbrunet/generator-jolistarter.png?branch=master)](https://travis-ci.org/lbrunet/generator-jolistarter)
+JoliStarter - Symfony2
+=====================
 
-> [Yeoman](http://yeoman.io) generator
+## Requires
 
+Things you probably need:
+
+- [npm](http://nodejs.org/)
+- [yo](http://yeoman.io/)
+- [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)
+- [grunt](http://gruntjs.com/getting-started)
+
+Only if using Compass
+- [gem](https://www.ruby-lang.org/en/downloads/)
+- [compass](http://compass-style.org/install/)
+
+for Symfony2
+- [composer](https://getcomposer.org/download/)
+
+## Choose features
+
+* Symfony 2 Standard Edition [[2.3](https://github.com/symfony/symfony-standard/tree/2.3), [2.5](https://github.com/symfony/symfony-standard/tree/2.5), [2.6](https://github.com/symfony/symfony-standard/tree/2.6)]
+* Grunt [[grunt-compass](https://github.com/gruntjs/grunt-contrib-compass), [grunt-coffee](https://github.com/gruntjs/grunt-contrib-coffee), [grunt-sass](https://github.com/gruntjs/grunt-contrib-sass), [grunt-typescript](https://github.com/k-maru/grunt-typescript), [grunt-cssmin](https://github.com/gruntjs/grunt-contrib-cssmin), [grunt-uglify](https://github.com/gruntjs/grunt-contrib-uglify), [grunt-copy](https://github.com/gruntjs/grunt-contrib-copy)]
+* Gulp [[gulp-ruby-sass](https://github.com/sindresorhus/gulp-ruby-sass), [gulp-copy](https://github.com/klaascuvelier/gulp-copy), [gulp-concat](https://github.com/wearefractal/gulp-concat)]
+* Bundle [[DoctrineFixturesBundle](https://github.com/doctrine/DoctrineFixturesBundle), [DoctrineMigrationsBundle](https://github.com/doctrine/DoctrineMigrationsBundle), [DoctrineMongoDBBundle](https://github.com/doctrine/DoctrineMongoDBBundle)]
+* Bootstrap 3.3
+
+## Default
+* Remove Assetic
+* -
+* Only if using grunt **(load-grunt-tasks)**
+* Only if using grunt-typescript or grunt-coffeee **(grunt-uglify)**
+* Only if using grunt-sass or grunt-compass **(grunt-css-min)**
+* -
+* Only if using gulp **(gulp-load-plugins)**
+* Only if using gulp-ruby-sass **(gulp-minify-css, gulp-plumber, gulp-rename, gulp-watch)**
+* Only if using gulp-concat **(gulp-uglify)**
+*-
+* Starts the automatic execution of `bower`, `npm` and `composer` after scaffolding has finished.
+
+## Assets
+
+Assets are stored in the folder **app/Resources/others/**
+* app/Resources/scss
+* app/Resources/fonts
+* app/Resources/...
+
+File [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) is enabled in the folder **app/Resources/libs**
+
+Boostrap 3.3 is available here **app/Resources/libs/** and all other bower library
 
 ## Getting Started
 
-### What is Yeoman?
+- Install: `npm install -g yo`
+- Install: `npm install -g generator-jolistarter`
+- Run: `yo jolistarter --force`
 
-Trick question. It's not a thing. It's this guy:
+Only use Grunt
+- Run: 'grunt' once
+- Run: `grunt javascript` for compiled all files coffee or typescript
+- Run: `grunt css` for compiled all files scss
+- Run: `grunt cp` for copied all files stored in **app/Resources** types in the folder **web/fonts**
 
-![](http://i.imgur.com/JHaAlBJ.png)
+Only use Gulp
+- Run: `gulp build` once, compiled all assets (Javascript, scss, copy)
+- Run: `gulp watch` for watch assets files, point at app/Resources
+- Run: `gulp` for compile assets files **(sass)** stored in **app/Resources** in the folder **web/css**
 
-Basically, he wears a top hat, lives in your computer, and waits for you to tell him what kind of application you wish to create.
+## Contribute
 
-Not every new computer comes with a Yeoman pre-installed. He lives in the [npm](https://npmjs.org) package repository. You only have to ask for him once, then he packs up and moves into your hard drive. *Make sure you clean up, he likes new and shiny things.*
-
-```bash
-npm install -g yo
-```
-
-### Yeoman Generators
-
-Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
-
-To install generator-jolistarter from npm, run:
-
-```bash
-npm install -g generator-jolistarter
-```
-
-Finally, initiate the generator:
-
-```bash
-yo jolistarter
-```
-
-### Getting To Know Yeoman
-
-Yeoman has a heart of gold. He's a person with feelings and opinions, but he's very easy to work with. If you think he's too opinionated, he can be easily convinced.
-
-If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
-
+`generator-jolistarter` is fork-friendly and you can always maintain a custom version which you `npm install && npm link` to continue using via `yo jolistarter` or a name of your choosing.
 
 ## License
 
-MIT
