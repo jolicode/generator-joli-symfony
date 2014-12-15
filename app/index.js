@@ -3,6 +3,8 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var path = require('path');
+var yaml = require('js-yaml');
+var fs = require('fs');
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -29,7 +31,7 @@ module.exports = yeoman.generators.Base.extend({
       default: true
     }];
 
-    this.prompt(prompts, function (answers) {
+    this.prompt(prompts, function(answers) {
 
       if (answers.symfonyStandard) {
         this.symfonyDistribution = this.SymfonyStandardDistribution;
@@ -56,7 +58,7 @@ module.exports = yeoman.generators.Base.extend({
         choices: ['2.3', '2.5', '2.6']
       }];
 
-      this.prompt(prompts, function (answers) {
+      this.prompt(prompts, function(answers) {
 
         var repo = 'https://github.com/' + 'symfony' + '/' + 'symfony-standard' + '/tree/' + answers.symfonyCommit;
         console.log('Thanks! I\'ll use ' + repo);
@@ -73,7 +75,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askToolsExtension: function () {
+  askToolsExtension: function() {
     var done = this.async();
     var prompts = [{
         type: 'list',
@@ -82,7 +84,7 @@ module.exports = yeoman.generators.Base.extend({
         default: 'gulp',
         choices: ['grunt', 'gulp']
     }];
-    this.prompt(prompts, function (answers) {
+    this.prompt(prompts, function(answers) {
       this.toolsExtension = answers.toolsExtension;
       done();
     }.bind(this));
@@ -125,7 +127,7 @@ module.exports = yeoman.generators.Base.extend({
         ]
       }];
 
-      this.prompt(prompts, function (answers) {
+      this.prompt(prompts, function(answers) {
         function hasFeature(feat) {
           return answers.gruntCustom.indexOf(feat) !== -1;
         }
@@ -141,7 +143,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askGulpCustom: function () {
+  askGulpCustom: function() {
     if (this.toolsExtension === 'gulp') {
       var done = this.async();
 
@@ -182,7 +184,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askBowerStandard: function () {
+  askBowerStandard: function() {
     var done = this.async();
 
     var prompts = [{
@@ -198,7 +200,7 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  symfonyBase: function () {
+  symfonyBase: function() {
     var done = this.async();
     var appPath = this.destinationRoot();
 
@@ -214,6 +216,46 @@ module.exports = yeoman.generators.Base.extend({
           done();
         }
     );
+  },
+
+  askbundle: function() {
+    var done = this.async();
+
+    var prompts = [{
+      type: 'checkbox',
+      name: 'addBundle',
+      message: 'Which bundle would you like to use ?',
+      choices: [
+      {
+        name: 'DoctrineFixturesBundle',
+        value: 'fixturebundle',
+        checked: true
+      },
+      {
+        name: 'DoctrineMigrationsBundle',
+        value: 'migrationbundle',
+        checked: false
+      },
+      {
+        name: 'DoctrineMongoDBBundle',
+        value: 'mongoDBbundle',
+        checked: false
+      }
+      ]
+
+    }];
+
+    this.prompt(prompts, function(answers){
+      function hasFeature(feat){
+        return answers.addBundle.indexOf(feat) !== -1;
+      }
+
+      this.fixturebundle = hasFeature('fixturebundle');
+      this.migrationbundle = hasFeature('migrationbundle');
+      this.mongoDBbundle = hasFeature('mongoDBbundle');
+      done();
+    }.bind(this));
+
   },
 
   writing: {
@@ -245,12 +287,67 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('jshintrc'),
         this.destinationPath('.jshintrc')
       );
-    }
+    },
+
   },
 
   install: function () {
     this.installDependencies({
       skipInstall: this.options['skip-install']
     });
+  },
+
+  end: {
+
+    cleanComposer: function () {
+      var done = this.async();
+
+      var composerContents = this.readFileAsString('composer.json');
+      var composerParse = JSON.parse(composerContents);
+      delete composerParse.require['symfony/assetic-bundle'];
+      var data = JSON.stringify(composerParse, null, 4);
+      fs.writeFileSync('composer.json', data);
+
+      done();
+    },
+
+    cleanConfig: function () {
+      var done = this.async();
+
+      var confDev = yaml.safeLoad(fs.readFileSync('app/config/config_dev.yml'));
+      delete confDev.assetic;
+      var newConfDev = yaml.dump(confDev, {indent: 4});
+      fs.writeFileSync('app/config/config_dev.yml', newConfDev);
+
+      var conf = yaml.safeLoad(fs.readFileSync('app/config/config.yml'));
+      delete conf.assetic;
+      var newConf = yaml.dump(conf, {indent: 4});
+      fs.writeFileSync('app/config/config.yml', newConf);
+
+      done();
+    },
+
+    updateAppKernel: function () {
+      console.log('This will add the custom bundles to the AppKernel');
+      var appKernelPath = 'app/AppKernel.php';
+      var appKernelContents = this.readFileAsString(appKernelPath);
+
+      var newAppKernelContents = appKernelContents.replace('new Symfony\\Bundle\\AsseticBundle\\AsseticBundle(),', '');
+      fs.writeFileSync(appKernelPath, newAppKernelContents);
+    },
+
+    addBundleComposer: function(){
+      if (this.fixturebundle) {
+        this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle', '--no-update']);
+      }
+      if (this.migrationbundle) {
+        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations:@dev', 'doctrine/doctrine-migrations-bundle:@dev', '--no-update']);
+      }
+      if (this.mongoDBbundle) {
+        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm:@dev', 'doctrine/mongodb-odm-bundle:@dev', '--no-update']);
+      }
+
+      this.spawnCommand('composer', ['install']);
+    }
   }
 });
