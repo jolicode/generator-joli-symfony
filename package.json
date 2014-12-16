@@ -1,5 +1,5 @@
 {
-  "name": "generator-jolistarter",
+  "name": "generator-joli-symfony",
   "version": "0.0.1",
   "description": "Scaffolds a standard Symfony2 application with Yeoman",
   "license": "MIT",
