@@ -341,10 +341,12 @@ module.exports = yeoman.generators.Base.extend({
         this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle', '--no-update']);
       }
       if (this.migrationbundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations:@dev', 'doctrine/doctrine-migrations-bundle:@dev', '--no-update']);
+        this.spawnCommand('composer', ['require', 'doctrine/migrations', '@dev',  '--no-update']);
+        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations-bundle', '@dev',  '--no-update']);
       }
       if (this.mongoDBbundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm:@dev', 'doctrine/mongodb-odm-bundle:@dev', '--no-update']);
+        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm', '@dev', '--no-update']);
+        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm-bundle', '@dev', '--no-update']);
       }
 
       this.spawnCommand('composer', ['install']);
