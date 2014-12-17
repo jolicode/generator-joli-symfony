@@ -1,9 +1,13 @@
 JoliStarter - Symfony2
 =====================
 
-Yo Generator for Symfony2 projects with sensible defaults.
+[Yeoman Generator](http://yeoman.io/generators/) for Symfony2 projects with sensible defaults and prompt for common bundles and frontend tooling.
 
-It will create a new project, remove Assetic and replace it with Gulp or Grunt.
+It will create a new Symfony project, remove Assetic and replace it with Gulp or Grunt.
+
+### Demo
+
+![](http://i.imgur.com/idCv3zq.gif)
 
 ## Requires
 
