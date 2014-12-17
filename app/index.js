@@ -80,7 +80,7 @@ module.exports = yeoman.generators.Base.extend({
     var prompts = [{
         type: 'list',
         name: 'toolsExtension',
-        message: 'Which tools would you like to use ?',
+        message: 'Which tools would you like to use?',
         default: 'gulp',
         choices: ['grunt', 'gulp']
     }];
@@ -97,7 +97,7 @@ module.exports = yeoman.generators.Base.extend({
       var prompts = [{
         type: 'checkbox',
         name: 'gruntCustom',
-        message: 'Personnalisez le fichier Gruntfile',
+        message: 'Customize Gruntfile',
         choices: [
           {
             name: 'grunt-compass',
@@ -150,7 +150,7 @@ module.exports = yeoman.generators.Base.extend({
       var prompts = [{
         type: 'checkbox',
         name: 'gulpCustom',
-        message: 'Personnalisez le fichier Gulpfile',
+        message: 'Customize Gulpfile',
         choices: [
           {
             name: 'gulp-ruby-sass',
@@ -190,7 +190,7 @@ module.exports = yeoman.generators.Base.extend({
     var prompts = [{
       type: 'confirm',
       name: 'bowerStandard',
-      message: 'Would you like to use the "BootStrap 3.3" ',
+      message: 'Would you like to use "BootStrap 3.3"?',
       default: true
     }];
 
@@ -224,7 +224,7 @@ module.exports = yeoman.generators.Base.extend({
     var prompts = [{
       type: 'checkbox',
       name: 'addBundle',
-      message: 'Which bundle would you like to use ?',
+      message: 'Which bundle would you like to use?',
       choices: [
       {
         name: 'DoctrineFixturesBundle',
@@ -328,7 +328,7 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     updateAppKernel: function () {
-      console.log('This will add the custom bundles to the AppKernel');
+      console.log('This will add the custom bundles to Symfony\'s AppKernel');
       var appKernelPath = 'app/AppKernel.php';
       var appKernelContents = this.readFileAsString(appKernelPath);
 
