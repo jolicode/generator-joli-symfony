@@ -1,4 +1,4 @@
-JoliStarter - Symfony2
+JoliSymfony - Symfony2
 =====================
 
 [Yeoman Generator](http://yeoman.io/generators/) for Symfony2 projects with sensible defaults and prompt for common bundles and frontend tooling.
@@ -49,7 +49,7 @@ And for Symfony2:
  * [DoctrineFixturesBundle](https://github.com/doctrine/DoctrineFixturesBundle)
  * [DoctrineMigrationsBundle](https://github.com/doctrine/DoctrineMigrationsBundle)
  * [DoctrineMongoDBBundle](https://github.com/doctrine/DoctrineMongoDBBundle)
-* Bootstrap 3.3
+* Bootstrap 3.3 (SASS)
 
 ## Workflow by default
 
@@ -78,8 +78,8 @@ Boostrap 3.3 is available here **app/Resources/libs/** with all other bower libr
 ## Getting Started
 
 - Install: `npm install -g yo`
-- Install: `npm install -g generator-jolistarter`
-- Run: `yo jolistarter --force`
+- Install: `npm install -g generator-joli-symfony`
+- Run: `yo joli-symfony --force`
 
 To use Grunt:
 - Run: `grunt` once
@@ -94,4 +94,4 @@ To use Gulp:
 
 ## Contribute
 
-`generator-jolistarter` is fork-friendly and you can always maintain a custom version which you `npm install && npm link` to continue using via `yo jolistarter` or a name of your choice.
+`generator-joli-symfony` is fork-friendly and you can always maintain a custom version which you `npm install && npm link` to continue using via `yo joli-symfony` or a name of your choice.
