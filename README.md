@@ -1,7 +1,7 @@
 JoliSymfony - Symfony2
 =====================
 
-[Yeoman Generator](http://yeoman.io/generators/) for Symfony2 projects with sensible defaults and prompt for common bundles and frontend tooling.
+generator-joli-symfony is a [Yeoman Generator](http://yeoman.io/generators/) to scaffold Symfony2 projects with sensible defaults and prompts for common bundles and frontend toolings.
 
 It will create a new Symfony project, remove Assetic and replace it with Gulp or Grunt.
 
@@ -11,21 +11,19 @@ It will create a new Symfony project, remove Assetic and replace it with Gulp or
 
 ## Requires
 
-Things you probably need:
+Mandatory requirements :
 
+- [composer](https://getcomposer.org/download/)
 - [npm](http://nodejs.org/)
 - [yo](http://yeoman.io/)
 - [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)
 - [grunt](http://gruntjs.com/getting-started)
 
-Things you may need if you use Compass:
+Optional requirements :
 
 - [gem](https://www.ruby-lang.org/en/downloads/)
 - [compass](http://compass-style.org/install/)
 
-And for Symfony2:
-
-- [composer](https://getcomposer.org/download/)
 
 ## What you can choose
 
@@ -51,10 +49,10 @@ And for Symfony2:
  * [DoctrineMongoDBBundle](https://github.com/doctrine/DoctrineMongoDBBundle)
 * Bootstrap 3.3 (SASS)
 
-## Workflow by default
+## Default workflow 
 
-* Install Symfony
-* Remove Assetic
+* Installs Symfony
+* Removes Assetic
  * Only if using grunt: **(load-grunt-tasks)**
  * Only if using grunt-typescript or grunt-coffeee: **(grunt-uglify)**
  * Only if using grunt-sass or grunt-compass: **(grunt-css-min)**
@@ -65,15 +63,14 @@ And for Symfony2:
 
 ## Assets location
 
-Assets are stored in the folder **app/Resources/others/**:
+Assets are stored in the **app/Resources/** folder :
 
 * app/Resources/scss
 * app/Resources/fonts
 * app/Resources/...
 
-File [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) is enabled in the folder **app/Resources/libs**
+Bower dependencies (like Boostrap 3.3) are installed in the **app/Resources/libs/** folder, thanks to a custom [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) file.
 
-Boostrap 3.3 is available here **app/Resources/libs/** with all other bower libraries.
 
 ## Getting Started
 
@@ -81,17 +78,6 @@ Boostrap 3.3 is available here **app/Resources/libs/** with all other bower libr
 - Install: `npm install -g generator-joli-symfony`
 - Run: `yo joli-symfony --force`
 
-To use Grunt:
-- Run: `grunt` once
-- Run: `grunt javascript` for compiled all files coffee or typescript
-- Run: `grunt css` for compiled all files scss
-- Run: `grunt cp` for copied all files stored in **app/Resources** types in the folder **web/fonts**
-
-To use Gulp:
-- Run: `gulp build` once, compiled all assets (Javascript, scss, copy)
-- Run: `gulp watch` for watch assets files, point at app/Resources
-- Run: `gulp` for compile assets files **(sass)** stored in **app/Resources** in the folder **web/css**
-
 ## Contribute
 
-`generator-joli-symfony` is fork-friendly and you can always maintain a custom version which you `npm install && npm link` to continue using via `yo joli-symfony` or a name of your choice.
+`generator-joli-symfony` is fork-friendly : you can maintain a custom version, in which you `npm install && npm link` so that you can still use it with `yo joli-symfony`, or with the name of your choice.
