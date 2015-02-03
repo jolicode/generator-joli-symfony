@@ -53,9 +53,9 @@ gulp.task('watch', function() {
 gulp.task('build', [
 <% if (gulpCopy) { %>'copy',<% } %>
 <% if (gulpConcat) { %>'concat',<% } %>
-<% if (gulpRubySass) { %>'Sass,'<% } %>
+<% if (gulpRubySass) { %>'Sass',<% } %>
 ]);
 
 gulp.task('default', [
-<% if (gulpRubySass) { %>'Sass,'<% } %>
+<% if (gulpRubySass) { %>'Sass',<% } %>
 ]);
