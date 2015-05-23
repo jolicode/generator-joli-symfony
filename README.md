@@ -18,6 +18,7 @@ Mandatory dependencies :
 - [yo](http://yeoman.io/)
 - [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)
 - [grunt](http://gruntjs.com/getting-started)
+- [bower](http://bower.io/#install-bower)
 
 Optional dependencies :
 
@@ -49,7 +50,7 @@ Optional dependencies :
  * [DoctrineMongoDBBundle](https://github.com/doctrine/DoctrineMongoDBBundle)
 * Bootstrap 3.3 (SASS)
 
-## Default workflow 
+## Default workflow
 
 * Installs Symfony
 * Removes Assetic
