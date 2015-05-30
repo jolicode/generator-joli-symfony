@@ -70,7 +70,7 @@ Assets are stored in the **app/Resources/** folder :
 * app/Resources/fonts
 * app/Resources/...
 
-Bower dependencies (like Boostrap 3.3) are installed in the **app/Resources/libs/** folder, thanks to a custom [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) file.
+Bower dependencies (like Bootstrap 3.3) are installed in the **app/Resources/libs/** folder, thanks to a custom [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) file.
 
 
 ## Getting Started
