@@ -1,61 +1,85 @@
-var gulp = require('gulp'),
-    gulpLoadPlugins = require('gulp-load-plugins'),
-    plugins = gulpLoadPlugins();
+var gulp = require('gulp');
+<% if (gulpRubySass) { %>var sass = require('gulp-ruby-sass');<% } %>
+<% if (gulpRubySass || gulpLess) { %>
+var sourcemaps = require('gulp-sourcemaps');
+var minifyCss = require('gulp-minify-css');
+var watch = require('gulp-watch');<% } %>
+<% if (gulpRubySass || gulpConcat || gulpLess) { %>
+var rename = require('gulp-rename');<% } %>
+<% if (gulpConcat) { %>
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');<% } %>
 
-var app = 'app/Resources';
-
-var onError = function(err) {
-    console.log(err);
+var path = {
+  app: 'app/Resources',
+  bower_components: './bower_components'
 };
-<% if (gulpRubySass) { %>
-gulp.task('Sass', function() {
-
-    gulp.src(app + '/scss/**/*.scss')
-        .pipe(plugins.plumber({
-            errorHandler: onError
-        }))
-        .pipe(plugins.rubySass({
-            compass: true,
-            style: 'compressed',
-            check: true}))
-        .pipe(plugins.minifyCss({keepSpecialComments:0}))
-        .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('web/css/'));
-});
-<% } %>
 
 <% if (gulpCopy) { %>
 gulp.task('copy', function() {
-    gulp.src(app + '/fonts/*.{ttf,woff,eof,svg,eot}')
+    gulp.src(path.app + '/assets/fonts/*.{ttf,woff,eof,svg,eot}')
         .pipe(gulp.dest('web/fonts/'));
-});
-<% } %>
-
-<% if (gulpConcat) { %>
-gulp.task('concat', function() {
-    gulp.src([
-        app + '/libs/jquery/dist/jquery.js',
-        app + '/libs/bootstrap/assets/javascripts/bootstrap.js'
-    ])
-        .pipe(plugins.concat('app.js'))
-        .pipe(plugins.uglify({mangle: true}))
-        .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('web/js/'));
-});
-<% } %>
+});<% } %>
 
 <% if (gulpRubySass) { %>
-gulp.task('watch', function() {
-    gulp.watch(app + '/scss/**/*.scss', ['Sass']);
-});
-<% } %>
+/**
+* gulp-ruby-sass
+* @see https://www.npmjs.com/package/gulp-ruby-sass
+*
+* Compile Sass to CSS using Compass.
+*/
+gulp.task('sass', function() {
 
-gulp.task('build', [
-<% if (gulpCopy) { %>'copy',<% } %>
-<% if (gulpConcat) { %>'concat',<% } %>
-<% if (gulpRubySass) { %>'Sass',<% } %>
-]);
+  return sass(path.app + '/scss', { compass: true, style: 'compressed', sourcemap: true })
+    .on('error', function (err) {
+      console.error('Error!', err.message);
+    })
+    .pipe(minifyCss({keepSpecialComments:0}))
+    .pipe(sourcemaps.write())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('web/css/'));
+});<% } %>
+
+<% if (gulpConcat) { %>
+/**
+* gulp-concat && gulp-uglify
+* @see https://www.npmjs.com/package/gulp-concat
+* @see https://www.npmjs.com/package/gulp-uglify
+*
+* Compile and minify js vendor (bower_components).
+*/
+gulp.task('vendor', function() {
+    gulp.src([
+        './bower_components/jquery/dist/jquery.js',
+        './bower_components/bootstrap/assets/javascripts/bootstrap.js'
+    ])
+    .pipe(concat('vendor.js'))
+    .pipe(uglify({mangle: true}))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('web/js/'));
+});
+
+/**
+* gulp-concat && gulp-uglify
+* @see https://www.npmjs.com/package/gulp-concat
+* @see https://www.npmjs.com/package/gulp-uglify
+*
+* Compile and minify js App (app/Resources/js).
+*/
+gulp.task('app', function() {
+    return gulp.src(path.app + '/js/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(concat('app.js'))
+    .pipe(uglify({mangle: true}).on('error', gutil.log))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('web/js/'));
+});<% } %>
+
 
 gulp.task('default', [
-<% if (gulpRubySass) { %>'Sass',<% } %>
+<% if (gulpCopy) { %>'copy',<% } %>
+<% if (gulpConcat) { %>'vendor',<% } %>
+<% if (gulpConcat) { %>'app',<% } %>
+<% if (gulpRubySass) { %>'sass'<% } %>
 ]);

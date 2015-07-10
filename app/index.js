@@ -1,7 +1,6 @@
-'use strict';
+"use strict";
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-var yosay = require('yosay');
 var path = require('path');
 var yaml = require('js-yaml');
 var fs = require('fs');
@@ -158,12 +157,12 @@ module.exports = yeoman.generators.Base.extend({
             checked: true
           },
           {
-            name: 'gulp-copy',
+            name: 'gulp-copy' + chalk.red(' => Do not use the gulp-copy module but a task default !'),
             value: 'gulpCopy',
             checked: false
           },
           {
-            name: 'gulp-concat',
+            name: 'gulp-concat && gulp-uglify',
             value: 'gulpConcat',
             checked: false
           }
@@ -187,6 +186,8 @@ module.exports = yeoman.generators.Base.extend({
   askBowerStandard: function() {
     var done = this.async();
 
+    // TODO: Add method for use spawnCommand for launch install Bootstrap, remove in the _bower.json
+    // Find bower install bootstrap-sass-official
     var prompts = [{
       type: 'confirm',
       name: 'bowerStandard',
@@ -245,7 +246,7 @@ module.exports = yeoman.generators.Base.extend({
 
     }];
 
-    this.prompt(prompts, function(answers){
+    this.prompt(prompts, function(answers) {
       function hasFeature(feat){
         return answers.addBundle.indexOf(feat) !== -1;
       }
@@ -270,10 +271,6 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('_gitignore'),
         this.destinationPath('.gitignore')
       );
-      this.fs.copy(
-        this.templatePath('_bowerrc'),
-        this.destinationPath('.bowerrc')
-      );
       this.template('_bower.json', 'bower.json');
       this.template('_package.json', 'package.json');
     },
@@ -287,12 +284,15 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('jshintrc'),
         this.destinationPath('.jshintrc')
       );
-    },
+  },
 
   },
 
+  // TODO: Launch when checkComposer or checkBower done()
+  // add method check if checkComposer or checkBower is true
+  // this.bowerInstall(['bootstrap'], { 'save': true })
   install: function () {
-    this.installDependencies({
+    this.installDependencies({ // run both npm and bower.
       skipInstall: this.options['skip-install']
     });
   },
@@ -349,6 +349,8 @@ module.exports = yeoman.generators.Base.extend({
         this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm-bundle', '@dev', '--no-update']);
       }
 
+      // TODO: Launch when checkComposer or checkBower done()
+      // add method check if checkComposer or checkBower is true
       this.spawnCommand('composer', ['install']);
     }
   }
