@@ -3,6 +3,8 @@
 module.exports = function (grunt) {
 <% if (gruntcompass) { %>
   grunt.loadNpmTasks('grunt-contrib-compass');<% } %>
+<% if (gruntLess || gruntcompass || gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-contrib-watch');<% } %>
 <% if (gruntTypescript || gruntcoffee || gruntBabel) { %>
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');<% } %>
@@ -10,6 +12,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-typescript');<% } %>
 <% if (gruntcoffee) { %>
   grunt.loadNpmTasks('grunt-contrib-coffee');<% } %>
+<% if (gruntLess) { %>
+  grunt.loadNpmTasks('grunt-contrib-less');<% } %>
+<% if (gruntLess || gruntcompass ||gruntTypescript || gruntcoffee || gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-contrib-watch');<% } %>
+<% if (gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-babel');<% } %>
 
   var path = {
     app: 'app/Resources',
@@ -113,38 +121,86 @@ module.exports = function (grunt) {
         }
       },
 
-        <% } %>
-
-        <% if (gruntCopy) { %>
-
-      /**
-         * grunt-contrib-copy
-         * @see https://github.com/gruntjs/grunt-contrib-copy
-       *
-         * Run predefined tasks whenever watched file patterns are added, changed or deleted.
-       */
-        copy: {
+      concat: {
+        options: {
+          sourceMap: true
+        },
         dist: {
           files: [{
-                    expand: true,
-                    cwd: app + '/libs/Fontello/fonts',
-                    dest: 'web/fonts',
-                     src: ['**']
+            src: libSources,
+            dest: path.build + '/js/vendor.js'
+          }, {
+            src: sources,
+            dest: path.build + '/js/app.js'
           }]
         }
+      },<% } %>
+      <% if (gruntLess) { %>
+      /**
+       * grunt-contrib-less
+       * @see https://github.com/gruntjs/grunt-contrib-less
+       *
+       * Compile Less to CSS.
+       */
+      less: {
+        development: {
+          options: {
+            compress: true,
+            yuicompress: true,
+            optimization: 2,
+            sourceMap: true
+          },
+          files: {
+            'web/css/less.min.css': path.app + '/less/main.less'
+          }
+        }
+      },<% } %>
+      <% if (gruntBabel) { %>
+      /**
+       * grunt-babel
+       * @see https://github.com/gruntjs/grunt-babel
+       *
+       * Turn ES6 code into vanilla ES5 with no runtime required
+       */
+      babel: {
+        options: {
+          sourceMap: true
         },
-
-        <% } %>
-
+        dist: {
+          files: [{
+            cwd: path.app + '/js',
+            src: '*.js',
+            dest: 'build/js',
+            expand: true
+          }]
+        }
+      },<% } %>
+      <% if (gruntLess || gruntcompass || gruntBabel) { %>
+      /**
+       * grunt-watch
+       * @see https://github.com/gruntjs/grunt-watch
+       *
+       */
+      watch: {<% if (gruntcompass) { %>
+        scss: {
+          files: [path.app + '/scss/**/*.scss'],
+          tasks: ['css']
+        },<% } %><% if (gruntBabel) { %>
+        js: {
+          files: [path.app + '/js/**/*.js'],
+          tasks: ['js']
+        },<% } %><% if (gruntLess) { %>
+        less: {
+          files: [path.app + '/less/**/*.less'],
+          tasks: ['less']
+        }<% } %>
+      }<% } %>
   });
 
   /****************************************************************
    * Grunt Task Definitions
    ****************************************************************/
-
-    <% if (gruntTypescript) { %>grunt.registerTask('javascript', ['typescript', 'uglify']);<% } %>
-    <% if (gruntcoffee) { %>grunt.registerTask('javascript', ['coffee', 'uglify']);<% } %>
-    <% if (gruntcompass) { %>grunt.registerTask('css', ['compass','cssmin']);<% } %>
-    <% if (gruntSass) { %>grunt.registerTask('css', ['sass','cssmin']);<% } %>
-    <% if (gruntCopy) { %>grunt.registerTask('cp', ['copy']);<% } %>
+  grunt.registerTask('default', [<% if (gruntcoffee || gruntTypescript) { %>'js',<% } %> <% if (gruntcompass || gruntLess) { %>'css'<% } %>]);
+  <% if (gruntcoffee || gruntTypescript) { %>grunt.registerTask('js', [<% if (gruntBabel) { %>'babel',<% } %> <% if (gruntTypescript) { %>'typescript',<% } %><% if (gruntcoffee) { %>'coffee',<% } %> 'concat', 'uglify']);<% } %>
+  grunt.registerTask('css', [<% if (gruntcompass) { %>'compass',<% } %>]);
 };

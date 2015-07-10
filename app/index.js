@@ -104,23 +104,23 @@ module.exports = yeoman.generators.Base.extend({
             checked: true
           },
           {
+            name: 'grunt-less',
+            value: 'gruntLess',
+            checked: false
+          },
+          {
+            name: 'grunt-babel' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            value: 'gruntBabel',
+            checked: true
+          },
+          {
             name: 'grunt-coffee',
             value: 'gruntCoffee',
             checked: false
           },
           {
-            name: 'grunt-sass',
-            value: 'gruntSass',
-            checked: false
-          },
-          {
             name: 'grunt-typescript',
             value: 'gruntTypescript',
-            checked: true
-          },
-          {
-            name: 'grunt-copy',
-            value: 'gruntCopy',
             checked: true
           }
         ]
@@ -133,9 +133,9 @@ module.exports = yeoman.generators.Base.extend({
 
         this.gruntcompass = hasFeature('gruntCompass');
         this.gruntcoffee = hasFeature('gruntCoffee');
-        this.gruntSass = hasFeature('gruntSass');
         this.gruntTypescript = hasFeature('gruntTypescript');
-        this.gruntCopy = hasFeature('gruntCopy');
+        this.gruntLess = hasFeature('gruntLess');
+        this.gruntBabel = hasFeature('gruntBabel');
 
         done();
       }.bind(this));
@@ -164,6 +164,26 @@ module.exports = yeoman.generators.Base.extend({
           {
             name: 'gulp-concat && gulp-uglify',
             value: 'gulpConcat',
+            checked: true
+          },
+          {
+            name: 'gulp-less',
+            value: 'gulpLess',
+            checked: false
+          },
+          {
+            name: 'gulp-babel' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            value: 'gulpBabel',
+            checked: true
+          },
+          {
+            name: 'gulp-typescript',
+            value: 'gulpTypescript',
+            checked: false
+          },
+          {
+            name: 'gulp-coffee',
+            value: 'gulpCoffee',
             checked: false
           }
         ]
@@ -177,6 +197,10 @@ module.exports = yeoman.generators.Base.extend({
         this.gulpRubySass = hasFeature('gulpRubySass');
         this.gulpCopy = hasFeature('gulpCopy');
         this.gulpConcat = hasFeature('gulpConcat');
+        this.gulpLess = hasFeature('gulpLess');
+        this.gulpBabel = hasFeature('gulpBabel');
+        this.gulpTypescript = hasFeature('gulpTypescript');
+        this.gulpCoffee = hasFeature('gulpCoffee');
 
         done();
       }.bind(this));
