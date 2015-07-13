@@ -4,6 +4,7 @@ var chalk = require('chalk');
 var path = require('path');
 var yaml = require('js-yaml');
 var fs = require('fs');
+var child_process = require('child_process');
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -308,8 +309,41 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('jshintrc'),
         this.destinationPath('.jshintrc')
       );
+    }
   },
 
+  checkComposer: function() {
+    var done = this.async();
+    this.globalComposer = false;
+
+    child_process.execFile('composer', ['-v'], function(error, stdout, stderr) {
+      if (error !== null) {
+        var prompts = [{
+          type: 'confirm',
+          name: 'checkComposer',
+          message: chalk.red('WARNING: No global composer installation found. We will install it locally if you decide to continue. Continue?'),
+          default: true
+        }];
+        this.prompt(prompts, function (answers) {
+          if (answers.checkComposer) {
+            // Use the secondary installation method as we cannot assume curl is installed
+            child_process.exec('php -r "readfile(\'https://getcomposer.org/installer\');" | php', function(error, stdout, stderr) {
+              console.log(chalk.green('Installing composer locally.'));
+              console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
+              console.log('');
+              done();
+            });
+          } else {
+            console.log(chalk.red('Composer did not installed locally!'));
+            done();
+          }
+          done();
+        }.bind(this));
+      } else {
+        this.globalComposer = true;
+        done();
+      }
+    }.bind(this));
   },
 
   // TODO: Launch when checkComposer or checkBower done()
