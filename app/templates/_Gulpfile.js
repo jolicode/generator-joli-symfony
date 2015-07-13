@@ -89,7 +89,7 @@ gulp.task('app', function() {
 * Compile Less to CSS.
 */
 gulp.task('less', function() {
-    gulp.src(app + '/less/main.less')
+    gulp.src(path.app + '/less/main.less')
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(minifyCss({keepSpecialComments:0}))
