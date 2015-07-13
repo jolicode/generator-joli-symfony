@@ -346,6 +346,40 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
+  checkBower: function() {
+    if (this.bowerStandard) {
+      var done = this.async();
+      this.globalBower = false;
+
+      child_process.execFile('bower', ['-v'], function(error, stdout, stderr) {
+        if (error !== null) {
+          var prompts = [{
+            type: 'confirm',
+            name: 'checkBower',
+            message: chalk.red('WARNING: No global bower installation found. We will install it locally if you decide to continue. Continue ?'),
+            default: true
+          }];
+          this.prompt(prompts, function (answers) {
+            if (answers.checkBower) {
+              child_process.exec('npm install -g bower', function(error, stdout, stderr) {
+                console.log(chalk.green('Installing bower locally.'));
+                console.log('See ' + chalk.yellow('http://bower.io/') + ' for more details on bower.');
+                console.log('');
+                done();
+              });
+            } else {
+              console.log(chalk.red('Bower did not installed locally!'));
+              done();
+            }
+          }.bind(this));
+        } else {
+          this.globalBower = true;
+          done();
+        }
+      }.bind(this));
+    }
+  },
+
   // TODO: Launch when checkComposer or checkBower done()
   // add method check if checkComposer or checkBower is true
   // this.bowerInstall(['bootstrap'], { 'save': true })
