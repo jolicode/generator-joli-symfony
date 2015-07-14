@@ -14,7 +14,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-coffee');<% } %>
 <% if (gruntLess) { %>
   grunt.loadNpmTasks('grunt-contrib-less');<% } %>
-<% if (gruntLess || gruntcompass ||gruntTypescript || gruntcoffee || gruntBabel) { %>
+<% if (gruntLess || gruntcompass || gruntcoffee || gruntBabel) { %>
   grunt.loadNpmTasks('grunt-contrib-watch');<% } %>
 <% if (gruntBabel) { %>
   grunt.loadNpmTasks('grunt-babel');<% } %>
@@ -27,7 +27,7 @@ module.exports = function (grunt) {
   };
 
   var libSources = [
-    path.bower_components + ''
+    //path.bower_components + '/react/react.js',
   ];
 
   var sources = [
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
             sourcemap: true,
             sassDir: path.app + '/scss',
             cssDir: 'web/css',
-            importPath: path.bower_components,
+            //importPath: path.bower_components, // Uncomment this line if the folder is present bower_components
             imagesDir: 'images',
             imagesPath: path.assets,
             generatedImagesDir: 'web/images',
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
       typescript: {
         base: {
           src: [path.app + '/js/**/*.ts'],
-          dest: 'build/js/typescript.js',
+          dest: 'build/js/app.js',
           options: {
             module: 'commonjs', //amd or commonjs
             target: 'es5', //or es3
@@ -92,9 +92,8 @@ module.exports = function (grunt) {
             join: true
           },
           files: {
-            'build/js/coffee.js': [
-              path.app + '/js/Checklist.coffee',
-              path.app + '/js/ChecklistManager.coffee'
+            'build/js/app.js': [
+              path.app + '/js/app.coffee'
             ]
           }
         }
@@ -115,8 +114,6 @@ module.exports = function (grunt) {
           files: {
             'web/js/vendor.min.js': ['build/js/vendor.js'],
             'web/js/app.min.js': ['build/js/app.js'],
-            <% if (gruntcoffee) { %>'web/js/coffee.min.js': ['build/js/coffee.js'],<% } %>
-            <% if (gruntTypescript) { %>'web/js/typescript.min.js': ['build/js/typescript.js'],<% } %>
           }
         }
       },
@@ -200,7 +197,7 @@ module.exports = function (grunt) {
   /****************************************************************
    * Grunt Task Definitions
    ****************************************************************/
-  grunt.registerTask('default', [<% if (gruntcoffee || gruntTypescript) { %>'js',<% } %> <% if (gruntcompass || gruntLess) { %>'css'<% } %>]);
-  <% if (gruntcoffee || gruntTypescript) { %>grunt.registerTask('js', [<% if (gruntBabel) { %>'babel',<% } %> <% if (gruntTypescript) { %>'typescript',<% } %><% if (gruntcoffee) { %>'coffee',<% } %> 'concat', 'uglify']);<% } %>
-  grunt.registerTask('css', [<% if (gruntcompass) { %>'compass',<% } %>]);
+  grunt.registerTask('default', [<% if (gruntcoffee || gruntTypescript || gruntBabel) { %>'js',<% } %> <% if (gruntcompass || gruntLess) { %>'css'<% } %>]);
+  <% if (gruntcoffee || gruntTypescript || gruntBabel) { %>grunt.registerTask('js', [<% if (gruntBabel) { %>'babel',<% } %> <% if (gruntTypescript) { %>'typescript',<% } %><% if (gruntcoffee) { %>'coffee',<% } %> 'concat', 'uglify']);<% } %>
+  grunt.registerTask('css', [<% if (gruntcompass) { %>'compass',<% } %><% if (gruntLess) { %>'less',<% } %>]);
 };
