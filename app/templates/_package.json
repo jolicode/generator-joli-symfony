@@ -18,9 +18,7 @@
     <% if (gruntBabel) { %>"grunt-babel": "^5.0.1",<% } %>
     "grunt-cli": "^0.1.13",
     "grunt": "^0.4.5"
-  }
-  <% } %>
-  <% if (toolsExtension === 'gulp') { %>,
+  }<% } %><% if (toolsExtension === 'gulp') { %>,
   "dependencies": {
     <% if (gulpRubySass) { %>"gulp-ruby-sass": "^1.0.5",<% } %>
     <% if (gulpRubySass || gulpConcat) { %>"gulp-sourcemaps": "^1.5.2",<% } %>
@@ -32,6 +30,17 @@
     <% if (gulpLess) { %>"gulp-less": "^3.0.3",<% } %>
     "gulp-util": "^3.0.6",
     "gulp": "^3.9.0"
-  }
-  <% } %>
+  }<% } %><% if (toolsExtension === 'brunch') { %>,
+  "dependencies": {
+    <% if (lessBrunch) { %>"less-brunch": "^1.8.1",<% } %>
+    <% if (sassBrunch) { %>"sass-brunch": "^1.8.10",<% } %>
+    <% if (stylusBrunch) { %>"stylus-brunch": "^1.8.1",<% } %>
+    <% if (coffeeScriptBrunch) { %>"coffee-script-brunch": "^1.8.2",<% } %>
+    <% if (typescriptBrunch) { %>"typescript-brunch": "^0.8.1",<% } %>
+    <% if (uglifyJsBrunch) { %>"uglify-js-brunch": "^1.7.8",<% } %>
+    <% if (babelBrunch) { %>"babel-brunch": "^5.1.2",<% } %>
+    "javascript-brunch": "^1.7.1",
+    "clean-css-brunch": "^1.7.2",
+    "brunch": "^1.8.3"
+  }<% } %>
 }

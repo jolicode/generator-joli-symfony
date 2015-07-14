@@ -82,7 +82,7 @@ module.exports = yeoman.generators.Base.extend({
         name: 'toolsExtension',
         message: 'Which tools would you like to use?',
         default: 'gulp',
-        choices: ['grunt', 'gulp']
+        choices: ['grunt', 'gulp', 'brunch']
     }];
     this.prompt(prompts, function(answers) {
       this.toolsExtension = answers.toolsExtension;
@@ -208,6 +208,71 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
+  askBrunchCustom: function() {
+    if (this.toolsExtension === 'brunch') {
+      var done = this.async();
+
+      var prompts = [{
+        type: 'checkbox',
+        name: 'brunchCustom',
+        message: 'Customize Brunch',
+        choices: [
+          {
+            name: 'less-brunch',
+            value: 'lessBrunch',
+            checked: false
+          },
+          {
+            name: 'sass-brunch',
+            value: 'sassBrunch',
+            checked: true
+          },
+          {
+            name: 'stylus-brunch',
+            value: 'stylusBrunch',
+            checked: false
+          },
+          {
+            name: 'coffee-script-brunch',
+            value: 'coffeeScriptBrunch',
+            checked: false
+          },
+          {
+            name: 'typescript-brunch',
+            value: 'typescriptBrunch',
+            checked: false
+          },
+          {
+            name: 'uglify-js-brunch',
+            value: 'uglifyJsBrunch',
+            checked: true
+          },
+          {
+            name: 'babel-brunch' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            value: 'babelBrunch',
+            checked: true
+          }
+        ]
+      }];
+
+      this.prompt(prompts, function (answers) {
+        function hasFeature(feat) {
+          return answers.brunchCustom.indexOf(feat) !== -1;
+        }
+
+        this.lessBrunch = hasFeature('lessBrunch');
+        this.sassBrunch = hasFeature('sassBrunch');
+        this.stylusBrunch = hasFeature('stylusBrunch');
+        this.coffeeScriptBrunch = hasFeature('coffeeScriptBrunch');
+        this.typescriptBrunch = hasFeature('typescriptBrunch');
+        this.uglifyJsBrunch = hasFeature('uglifyJsBrunch');
+        this.babelBrunch = hasFeature('babelBrunch');
+
+        done();
+      }.bind(this));
+    }
+  },
+
   askBowerStandard: function() {
     var done = this.async();
 
@@ -291,6 +356,9 @@ module.exports = yeoman.generators.Base.extend({
       }
       if (this.toolsExtension === 'gulp') {
         this.template('_Gulpfile.js', 'Gulpfile.js');
+      }
+      if (this.toolsExtension === 'brunch') {
+        this.template('_brunch-config.js', 'brunch-config.js');
       }
       this.fs.copy(
         this.templatePath('_gitignore'),
