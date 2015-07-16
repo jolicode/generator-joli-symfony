@@ -360,6 +360,27 @@ module.exports = yeoman.generators.Base.extend({
       if (this.toolsExtension === 'brunch') {
         this.template('_brunch-config.js', 'brunch-config.js');
       }
+      if (this.gruntcompass || this.gulpRubySass || this.sassBrunch) {
+        this.directory('./demo/scss', 'app/Resources/scss');
+      }
+      if (this.gruntLess || this.gulpLess || this.lessBrunch) {
+        this.directory('./demo/less', 'app/Resources/less');
+      }
+      if (this.stylusBrunch) {
+        this.directory('./demo/styl', 'app/Resources/styl');
+      }
+      if (this.gruntcoffee || this.gulpCoffee || this.coffeeScriptBrunch) {
+        this.directory('./demo/coffee', 'app/Resources/js');
+      }
+      if (this.gruntBabel || this.gulpBabel || this.babelBrunch) {
+        this.directory('./demo/es6', 'app/Resources/js');
+      }
+      if (this.uglifyJsBrunch || this.gulpConcat) {
+        this.directory('./demo/js', 'app/Resources/js');
+      }
+      if (this.gruntTypescript || this.gulpTypescript || this.typescriptBrunch) {
+        this.directory('./demo/ts', 'app/Resources/js');
+      }
       this.fs.copy(
         this.templatePath('_gitignore'),
         this.destinationPath('.gitignore')
