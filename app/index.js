@@ -163,9 +163,9 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name: 'gulp-concat && gulp-uglify',
+            name: 'gulp-javascript' + chalk.yellow(' => use for javascript ES5, ES4, ES3, not ES6 !'),
             value: 'gulpConcat',
-            checked: true
+            checked: false
           },
           {
             name: 'gulp-less',

@@ -6,7 +6,7 @@ var minifyCss = require('gulp-minify-css');
 var watch = require('gulp-watch');<% } %>
 <% if (gulpRubySass || gulpConcat || gulpLess) { %>
 var rename = require('gulp-rename');<% } %>
-<% if (gulpConcat) { %>
+<% if (gulpConcat || gulpBabel || gulpCoffee || gulpTypescript) { %>
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');<% } %>
 <% if (gulpTypescript) { %>var ts = require('gulp-typescript');<% } %>
