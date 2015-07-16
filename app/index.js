@@ -153,7 +153,7 @@ module.exports = yeoman.generators.Base.extend({
         message: 'Customize Gulpfile',
         choices: [
           {
-            name: 'gulp-ruby-sass',
+            name: 'gulp-ruby-sass '  + chalk.yellow(' ♥ '),
             value: 'gulpRubySass',
             checked: true
           },
@@ -173,7 +173,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name: 'gulp-babel' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            name: 'gulp-babel ' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required ♥'),
             value: 'gulpBabel',
             checked: true
           },
@@ -223,7 +223,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name: 'sass-brunch',
+            name:  'sass-brunch ' + chalk.yellow(' ♥ '),
             value: 'sassBrunch',
             checked: true
           },
@@ -248,7 +248,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: true
           },
           {
-            name: 'babel-brunch' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            name: 'babel-brunch' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required ♥'),
             value: 'babelBrunch',
             checked: true
           }
@@ -281,7 +281,7 @@ module.exports = yeoman.generators.Base.extend({
     var prompts = [{
       type: 'confirm',
       name: 'bowerStandard',
-      message: 'Would you like to use "BootStrap 3.3"?',
+      message: 'Would you like to use "BootStrap Sass"?',
       default: true
     }];
 
@@ -513,7 +513,7 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     updateAppKernel: function () {
-      console.log('This will add the custom bundles to Symfony\'s AppKernel');
+      console.log(chalk.cyan('This will add the custom bundles to Symfony\'s AppKernel'));
       var appKernelPath = 'app/AppKernel.php';
       var appKernelContents = this.readFileAsString(appKernelPath);
 
@@ -536,7 +536,7 @@ module.exports = yeoman.generators.Base.extend({
 
       // TODO: Launch when checkComposer or checkBower done()
       // add method check if checkComposer or checkBower is true
-      this.spawnCommand('composer', ['install']);
+      this.spawnCommand('composer', ['install', '--prefer-dist']);
     }
   }
 });
