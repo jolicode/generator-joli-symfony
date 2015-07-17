@@ -508,7 +508,6 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     updateAppKernel: function () {
-      console.log(chalk.cyan('This will add the custom bundles to Symfony\'s AppKernel'));
       var appKernelPath = 'app/AppKernel.php';
       var appKernelContents = this.readFileAsString(appKernelPath);
 
@@ -529,9 +528,13 @@ module.exports = yeoman.generators.Base.extend({
         this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm-bundle', '@dev', '--no-update']);
       }
 
-      // TODO: Launch when checkComposer or checkBower done()
-      // add method check if checkComposer or checkBower is true
+      if (this.fixturebundle || this.migrationbundle || this.mongoDBbundle) {
+        console.log(chalk.cyan('This will add the custom bundles to Symfony\'s AppKernel'));
+      }
+
+      if (this.globalComposer) {
         this.spawnCommand('composer', ['install', '--prefer-dist']);
       }
     }
+  }
 });
