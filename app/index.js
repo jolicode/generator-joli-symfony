@@ -485,15 +485,10 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     cleanComposer: function () {
-      var done = this.async();
-
-      var composerContents = this.readFileAsString('composer.json');
-      var composerParse = JSON.parse(composerContents);
-      delete composerParse.require['symfony/assetic-bundle'];
-      var data = JSON.stringify(composerParse, null, 4);
-      fs.writeFileSync('composer.json', data);
-
-      done();
+      this.spawnCommand('composer', ['remove', 'symfony/assetic-bundle', '--no-update']);
+      console.log('');
+      console.log(chalk.bgGreen('assetic-bundle is removed success to Symfony !'));
+      console.log('');
     },
 
     cleanConfig: function () {
