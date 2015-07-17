@@ -420,13 +420,13 @@ module.exports = yeoman.generators.Base.extend({
               console.log(chalk.green('Installing composer locally.'));
               console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
               console.log('');
+              this.globalComposer = true;
               done();
-            });
+            }.bind(this));
           } else {
             console.log(chalk.red('Composer did not installed locally!'));
             done();
           }
-          done();
         }.bind(this));
       } else {
         this.globalComposer = true;
@@ -536,7 +536,7 @@ module.exports = yeoman.generators.Base.extend({
 
       // TODO: Launch when checkComposer or checkBower done()
       // add method check if checkComposer or checkBower is true
-      this.spawnCommand('composer', ['install', '--prefer-dist']);
+        this.spawnCommand('composer', ['install', '--prefer-dist']);
+      }
     }
-  }
 });
