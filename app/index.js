@@ -21,7 +21,7 @@ module.exports = yeoman.generators.Base.extend({
     this.SymfonyStandardDistribution = {
       username: 'symfony',
       repository: 'symfony-standard',
-      commit: '2.6'
+      commit: '2.7'
     };
 
     var prompts = [{
@@ -54,8 +54,8 @@ module.exports = yeoman.generators.Base.extend({
         type: 'list',
         name: 'symfonyCommit',
         message: 'Commit (commit/branch/tag)',
-        default: '2.6',
-        choices: ['2.3', '2.5', '2.6']
+        default: '2.7',
+        choices: ['2.3', '2.6', '2.7']
       }];
 
       this.prompt(prompts, function(answers) {

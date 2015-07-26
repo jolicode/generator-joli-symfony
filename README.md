@@ -30,8 +30,8 @@ Optional dependencies :
 
 * Symfony 2 Standard Edition:
  * [2.3](https://github.com/symfony/symfony-standard/tree/2.3)
- * [2.5](https://github.com/symfony/symfony-standard/tree/2.5)
  * [2.6](https://github.com/symfony/symfony-standard/tree/2.6)
+ * [2.7](https://github.com/symfony/symfony-standard/tree/2.7)
 * Grunt:
  * [grunt-compass](https://github.com/gruntjs/grunt-contrib-compass)
  * [grunt-coffee](https://github.com/gruntjs/grunt-contrib-coffee)
