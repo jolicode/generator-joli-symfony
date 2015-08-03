@@ -335,11 +335,6 @@ module.exports = yeoman.generators.Base.extend({
         name: 'DoctrineMigrationsBundle',
         value: 'migrationbundle',
         checked: false
-      },
-      {
-        name: 'DoctrineMongoDBBundle',
-        value: 'mongoDBbundle',
-        checked: false
       }
       ]
 
@@ -352,7 +347,6 @@ module.exports = yeoman.generators.Base.extend({
 
       this.fixturebundle = hasFeature('fixturebundle');
       this.migrationbundle = hasFeature('migrationbundle');
-      this.mongoDBbundle = hasFeature('mongoDBbundle');
       done();
     }.bind(this));
   },
@@ -563,23 +557,10 @@ module.exports = yeoman.generators.Base.extend({
 
     addBundleComposer: function() {
       if (this.fixturebundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle', '--no-update']);
+        this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle']);
       }
       if (this.migrationbundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/migrations', '@dev',  '--no-update']);
-        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations-bundle', '@dev',  '--no-update']);
-      }
-      if (this.mongoDBbundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm', '@dev', '--no-update']);
-        this.spawnCommand('composer', ['require', 'doctrine/mongodb-odm-bundle', '@dev', '--no-update']);
-      }
-
-      if (this.fixturebundle || this.migrationbundle || this.mongoDBbundle) {
-        console.log(chalk.cyan('This will add the custom bundles to Symfony\'s AppKernel'));
-      }
-
-      if (this.globalComposer) {
-        this.spawnCommand('composer', ['install', '--prefer-dist']);
+        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations-bundle']);
       }
     }
   }
