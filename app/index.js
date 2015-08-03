@@ -1,10 +1,13 @@
 "use strict";
+
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var path = require('path');
 var yaml = require('js-yaml');
-var fs = require('fs');
+var fs = require('fs-extra');
+var rmdir = require('rimraf');
 var child_process = require('child_process');
+var http = require("http");
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -19,9 +22,9 @@ module.exports = yeoman.generators.Base.extend({
     var done = this.async();
 
     this.SymfonyStandardDistribution = {
-      username: 'symfony',
-      repository: 'symfony-standard',
-      commit: '2.7'
+      host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
+      commit: '2.7',
+      ext: 'zip'
     };
 
     var prompts = [{
@@ -65,14 +68,38 @@ module.exports = yeoman.generators.Base.extend({
         console.log('');
 
         this.symfonyDistribution = {
-          username: 'symfony',
-          repository: 'symfony-standard',
-          commit: answers.symfonyCommit
+          host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
+          commit: answers.symfonyCommit,
+          ext: 'zip'
         };
 
         done();
       }.bind(this));
     }
+  },
+
+  getTagSymfony: function() {
+    var version = this.symfonyDistribution.commit,
+        done = this.async();
+
+    http.get('http://symfony.com/versions.json', function(res) {
+
+     var data = '';
+
+     res.on('data', function(d) {
+       data += d;
+     });
+
+     res.on('error', function(e) {
+       console.log("Got error: " + e.message);
+     });
+
+     res.on('end', function() {
+       var parsed = JSON.parse(data);
+       this.symfonyDistribution.commit = parsed[version];
+       done();
+     }.bind(this));
+    }.bind(this));
   },
 
   askToolsExtension: function() {
@@ -291,24 +318,6 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  symfonyBase: function() {
-    var done = this.async();
-    var appPath = this.destinationRoot();
-
-    this.remote(
-        this.symfonyDistribution.username,
-        this.symfonyDistribution.repository,
-        this.symfonyDistribution.commit,
-        function (err, remote) {
-          if (err) {
-            return done(err);
-          }
-          remote.directory('.', path.join(appPath, '.'));
-          done();
-        }
-    );
-  },
-
   askbundle: function() {
     var done = this.async();
 
@@ -346,7 +355,44 @@ module.exports = yeoman.generators.Base.extend({
       this.mongoDBbundle = hasFeature('mongoDBbundle');
       done();
     }.bind(this));
+  },
 
+    symfonyBase: function() {
+    var done = this.async();
+    var appPath = this.destinationRoot();
+    var repo = this.symfonyDistribution.host + this.symfonyDistribution.commit  + '.' + this.symfonyDistribution.ext;
+
+    this.extract(repo, appPath, function (err, remote) {
+          if (err) {
+            return done(err);
+          } else {
+            console.log(' 👍 ' + chalk.green(' Download success ! '));
+            done();
+          }
+        }
+    );
+  },
+
+  moveSymfonyBase: function() {
+    var done = this.async();
+    var directory = this.destinationRoot() + '/Symfony';
+    this.directory(directory, '.');
+    fs.move('./Symfony/', '.', function (err) {
+      if (err) return console.error(err)
+      console.log("success!");
+    });
+    done();
+  },
+
+  removeSymfonyBase: function() {
+    var done = this.async();
+    var directory = this.destinationRoot() + '/Symfony';
+    rmdir(directory, function(error) {
+      if (null === error) {
+        console.log(' 👍 ' + chalk.yellow(' Installation Symfony success !'));
+      }
+    });
+    done();
   },
 
   writing: {
@@ -515,7 +561,7 @@ module.exports = yeoman.generators.Base.extend({
       fs.writeFileSync(appKernelPath, newAppKernelContents);
     },
 
-    addBundleComposer: function(){
+    addBundleComposer: function() {
       if (this.fixturebundle) {
         this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle', '--no-update']);
       }
