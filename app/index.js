@@ -303,8 +303,6 @@ module.exports = yeoman.generators.Base.extend({
   askBowerStandard: function() {
     var done = this.async();
 
-    // TODO: Add method for use spawnCommand for launch install Bootstrap, remove in the _bower.json
-    // Find bower install bootstrap-sass-official
     var prompts = [{
       type: 'confirm',
       name: 'bowerStandard',
@@ -525,10 +523,7 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     cleanComposer: function () {
-      this.spawnCommand('composer', ['remove', 'symfony/assetic-bundle', '--no-update']);
-      console.log('');
-      console.log(chalk.bgGreen('assetic-bundle is removed success to Symfony !'));
-      console.log('');
+      this.spawnCommand('composer', ['remove', 'symfony/assetic-bundle']);
     },
 
     cleanConfig: function () {
