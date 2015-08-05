@@ -300,18 +300,18 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askBowerStandard: function() {
+  askBootStrapSass: function() {
     var done = this.async();
 
     var prompts = [{
       type: 'confirm',
-      name: 'bowerStandard',
+      name: 'bootStrapSass',
       message: 'Would you like to use "BootStrap Sass"?',
       default: true
     }];
 
     this.prompt(prompts, function (answers) {
-      this.bowerStandard = answers.bowerStandard;
+      this.bootStrapSass = answers.bootStrapSass;
       done();
     }.bind(this));
   },
@@ -474,9 +474,10 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   checkBower: function() {
-    if (this.bowerStandard) {
+    this.globalBower = false;
+
+    if (this.bootStrapSass) {
       var done = this.async();
-      this.globalBower = false;
 
       child_process.execFile('bower', ['-v'], function(error, stdout, stderr) {
         if (error !== null) {
@@ -556,6 +557,12 @@ module.exports = yeoman.generators.Base.extend({
       }
       if (this.migrationbundle) {
         this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations-bundle']);
+      }
+    },
+
+    addBootStrapSass: function() {
+      if (this.bootStrapSass) {
+        this.spawnCommand('bower', ['install', 'bootstrap-sass-official', '--save']);
       }
     }
   }

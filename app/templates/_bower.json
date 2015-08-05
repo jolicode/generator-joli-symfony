@@ -11,8 +11,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    <% if (bowerStandard) { %>"bootstrap": "https://github.com/twbs/bootstrap-sass/archive/v3.3.5.tar.gz"<% } %>
-  }
+  ]
 }
