@@ -1,6 +1,17 @@
 {
   "name": "<%= _.slugify(appname) %>",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "authors": [
+    "Laurent Brunet <lbrunet@jolicode.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     <% if (bowerStandard) { %>"bootstrap": "https://github.com/twbs/bootstrap-sass/archive/v3.3.5.tar.gz"<% } %>
   }

@@ -1,8 +1,7 @@
 JoliSymfony - Symfony2
 =====================
-
-[![NPM](https://nodei.co/npm/generator-joli-symfony.png?compact=true)](https://nodei.co/npm/generator-joli-symfony/)
-[![NPM](https://nodei.co/npm-dl/generator-joli-symfony.png)](https://nodei.co/npm/generator-joli-symfony/)
+[![NPM Version](https://img.shields.io/npm/v/generator-joli-symfony.svg?style=flat-square)](https://www.npmjs.com/package/generator-joli-symfony)
+[![Download Month](https://img.shields.io/npm/dm/generator-joli-symfony.svg?style=flat-square)](https://www.npmjs.com/package/generator-joli-symfony)
 
 generator-joli-symfony is a [Yeoman Generator](http://yeoman.io/generators/) to scaffold Symfony2 projects with sensible defaults, common bundles and frontend tools.
 
@@ -22,6 +21,7 @@ Mandatory dependencies :
 - [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)
 - [grunt](http://gruntjs.com/getting-started)
 - [bower](http://bower.io/#install-bower)
+- [brunch](http://brunch.io/)
 
 Optional dependencies :
 
@@ -37,32 +37,41 @@ Optional dependencies :
  * [2.7](https://github.com/symfony/symfony-standard/tree/2.7)
 * Grunt:
  * [grunt-compass](https://github.com/gruntjs/grunt-contrib-compass)
+ * [grunt-less](https://github.com/gruntjs/grunt-contrib-less)
+ * [grunt-babel](https://github.com/babel/grunt-babel)
  * [grunt-coffee](https://github.com/gruntjs/grunt-contrib-coffee)
- * [grunt-sass](https://github.com/gruntjs/grunt-contrib-sass)
  * [grunt-typescript](https://github.com/k-maru/grunt-typescript)
- * [grunt-cssmin](https://github.com/gruntjs/grunt-contrib-cssmin)
- * [grunt-uglify](https://github.com/gruntjs/grunt-contrib-uglify)
- * [grunt-copy](https://github.com/gruntjs/grunt-contrib-copy)
 * Gulp:
  * [gulp-ruby-sass](https://github.com/sindresorhus/gulp-ruby-sass)
- * [gulp-copy](https://github.com/klaascuvelier/gulp-copy)
- * [gulp-concat](https://github.com/wearefractal/gulp-concat)
+ * gulp-copy
+ * gulp-javascript
+ * [gulp-less](https://github.com/plus3network/gulp-less)
+ * [gulp-babel](https://github.com/babel/gulp-babel)
+ * [gulp-typescript](https://github.com/ivogabe/gulp-typescript)
+ * [gulp-coffee](https://github.com/wearefractal/gulp-coffee)
+* Brunch:
+ * [less-brunch](https://github.com/brunch/less-brunch)
+ * [sass-brunch](https://github.com/brunch/sass-brunch)
+ * [stylus-brunch](https://github.com/brunch/stylus-brunch)
+ * [coffee-script-brunch](https://github.com/brunch/coffee-script-brunch)
+ * [typescript-brunch](https://github.com/joshheyse/typescript-brunch)
+ * [uglify-js-brunch](https://github.com/brunch/uglify-js-brunch)
+ * [babel-brunch](https://github.com/babel/babel-brunch)
 * Symfony2 Bundle:
  * [DoctrineFixturesBundle](https://github.com/doctrine/DoctrineFixturesBundle)
  * [DoctrineMigrationsBundle](https://github.com/doctrine/DoctrineMigrationsBundle)
- * [DoctrineMongoDBBundle](https://github.com/doctrine/DoctrineMongoDBBundle)
-* Bootstrap 3.3 (SASS)
+* Bootstrap-sass-official
 
 ## Default workflow
 
 * Installs Symfony
 * Removes Assetic
- * Only if using grunt: **(load-grunt-tasks)**
- * Only if using grunt-typescript or grunt-coffeee: **(grunt-uglify)**
- * Only if using grunt-sass or grunt-compass: **(grunt-css-min)**
- * Only if using gulp **(gulp-load-plugins)**
- * Only if using gulp-ruby-sass **(gulp-minify-css, gulp-plumber, gulp-rename, gulp-watch)**
- * Only if using gulp-concat **(gulp-uglify)**
+ * Only if using grunt-less or grunt-babel or grunt-compass: **(grunt-contrib-watch)**
+ * Only if using grunt-typescript or grunt-coffeee or grunt-babel : **(grunt-uglify)**
+ * Only if using gulp-ruby-sass **(gulp-watch)**
+ * Only if using gulp-ruby-sass or gulp-javascript **(gulp-rename, gulp-sourcemaps)**
+ * Only if using gulp-ruby-sass or gulp-less **(gulp-minify-css)**
+ * Only if using gulp-javascript or gulp-coffee or gulp-typescript or gulp-babel **(gulp-uglify, gulp-concat)**
 * Starts the automatic execution of `bower`, `npm` and `composer` after scaffolding has finished.
 
 ## Assets location
@@ -72,9 +81,6 @@ Assets are stored in the **app/Resources/** folder :
 * app/Resources/scss
 * app/Resources/fonts
 * app/Resources/...
-
-Bower dependencies (like Bootstrap 3.3) are installed in the **app/Resources/libs/** folder, thanks to a custom [.bowerrc](http://bower.io/docs/config/#bowerrc-specification) file.
-
 
 ## Getting Started
 
