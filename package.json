@@ -1,6 +1,6 @@
 {
   "name": "generator-joli-symfony",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Scaffolds a standard Symfony2 application with Yeoman",
   "license": "MIT",
   "main": "app/index.js",
