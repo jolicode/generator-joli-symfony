@@ -5,52 +5,51 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.0.0 - 2015-08-06
 
 ### Changed
-- Improve install bootstrap
-- improving the suppresion of Assetic
-- Changing `Gruntfile.js` and `Gulpfile.js` files
-- Changing `bower.json` file
-- Updating the version of the modules npm
-- Changing method fetch symfony
+- Bootstrap's installation improved
+- Assetic's deletion improved
+- Brand new method to fetch Symfony's versions
+- Now detects if `composer` and `bower`are already installed on the system
+- `Gruntfile.js` and `Gulpfile.js` updated
+- `bower.json` updated
+- Npm modules updated
 
 ### Removed
-- Removed module `grunt-sass`
-- Removed module `load-grunt-tasks`
-- Removed module `gulp-load-plugins
-- Removed bundle `DoctrineMongoDBBundle`
-- Removed file `.bowerrc` - all files installed with bower will be stored in the default `bower_component` directory
+- Module `grunt-sass` removed
+- Module `load-grunt-tasks` removed
+- Module `gulp-load-plugins` removed
+- Bundle `DoctrineMongoDBBundle` removed
+- File `.bowerrc` removed - All files installed with bower will be stored in the default `bower_component` directory.
 
 
 ### Added
 
 Grunt
-- Added module `grunt-less`
-- Added module `grunt-babel`
-- Added module `grunt-contrib-watch`
+- Module `grunt-less` added
+- Module `grunt-babel` added
+- Module `grunt-contrib-watch` added
 
 Gulp
-- Added module `gulp-less`
-- Added module `gulp-babel`
-- Added module `gulp-typescript`
-- Added module `gulp-coffee`
-- Added module `gulp-watch`
+- Module `gulp-less` added
+- Module `gulp-babel` added
+- Module `gulp-typescript` added
+- Module `gulp-coffee` added
+- Module `gulp-watch` added
 
 Brunch
-- Added file `brunch-config.js`
-- Added choices `Brunch` in the list tools
-- Added module `less-brunch`
-- Added module `sass-brunch`
-- Added module `stylus-brunch`
-- Added module `coffee-brunch`
-- Added module `typescript-brunch`
-- Added module `uglify-js-brunch`
-- Added module `babel-brunch`
+- Configuration file `brunch-config.js` added
+- Choice `Brunch` added in the tools list
+- Module `less-brunch` added
+- Module `sass-brunch` added
+- Module `stylus-brunch` added
+- Module `coffee-brunch` added
+- Module `typescript-brunch` added
+- Module `uglify-js-brunch` added
+- Module `babel-brunch` added
 
-- Added method which determines symfony version by tag
-- Added method to check if composer is defined in the system
-- Added method to check if bower is defined in the system
-- Added modules npm `fs-extra`
+NPM
+- Module `fs-extra` added
 
-- Added files demo compilation
+- Demo added
 	- files `scss`
 	- files `less`
 	- files `stylus`
@@ -58,5 +57,3 @@ Brunch
 	- files `Coffee`
 	- files `Js (export)`
 	- files `Js (Class ES6)`
-
-Only added if you choose good modules with Grunt, Gulp or Brunch
