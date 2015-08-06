@@ -5,7 +5,7 @@ JoliSymfony - Symfony2
 
 generator-joli-symfony is a [Yeoman Generator](http://yeoman.io/generators/) to scaffold Symfony2 projects with sensible defaults, common bundles and frontend tools.
 
-It will create a new Symfony project, remove Assetic and replace it with either Gulp or Grunt.
+It will create a new Symfony project, remove Assetic and replace it with either Gulp, Grunt or Brunch.
 
 ### Demo
 
