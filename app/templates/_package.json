@@ -6,31 +6,44 @@
   "repository": {
     "type": "git",
     "url": ""
-  },
+  }<% if (toolsExtension === 'grunt') { %>,
   "dependencies": {
-    <% if (toolsExtension === 'grunt') { %>
-    "grunt": "~0.4.1",
-    <% if (gruntcompass) { %>"grunt-contrib-watch": "~0.4.4",<% } %>
-    <% if (gruntCopy) { %>"grunt-contrib-copy": "~0.4.1",<% } %>
-    <% if (gruntcoffee) { %>"grunt-contrib-coffee": "~0.4.0",<% } %>
-    <% if (gruntcoffee || gruntTypescript) { %>"grunt-contrib-uglify": "~0.2.2",<% } %>
-    <% if (gruntTypescript) { %>"grunt-typescript": "~0.4.4",<% } %>
-    <% if (gruntSass) { %>"grunt-contrib-sass": "^0.7.3",<% } %>
-    <% if (gruntcompass) { %>"grunt-contrib-compass": "^0.7.2",<% } %>
-    <% if (gruntcompass || gruntSass) { %>"grunt-contrib-cssmin": "^0.9.0",<% } %>
-    <% if (toolsExtension === 'grunt') { %>"load-grunt-tasks": "~0.1.0"<% } %>
-    <% } %>
-    <% if (toolsExtension === 'gulp') { %>
-      "gulp": "^3.8.8",
-    <% if (gulpRubySass) { %>"gulp-ruby-sass": "^0.7.1",<% } %>
-    <% if (gulpRubySass) { %>"gulp-minify-css": "^0.3.10",<% } %>
-    <% if (gulpRubySass) { %>"gulp-plumber": "^0.6.6",<% } %>
-    <% if (gulpRubySass) { %>"gulp-rename": "^1.2.0",<% } %>
-    <% if (gulpRubySass) { %>"gulp-watch": "^1.1.0",<% } %>
-    <% if (gulpConcat) { %>"gulp-concat": "^2.4.1",<% } %>
-    <% if (gulpCopy) { %>"gulp-copy": "0.0.2",<% } %>
-    <% if (gulpConcat) { %>"gulp-uglify": "^1.0.1",<% } %>
-    <% if (toolsExtension === 'gulp') { %>"gulp-load-plugins": "^0.7.0"<% } %>
-    <% } %>
-  }
+    <% if (gruntcompass || gruntLess || gruntBabel) { %>"grunt-contrib-watch": "^0.6.1",<% } %>
+    <% if (gruntcoffee) { %>"grunt-contrib-coffee": "^0.13.0",<% } %>
+    <% if (gruntcoffee || gruntTypescript || gruntBabel) { %>"grunt-contrib-uglify": "^0.9.1",<% } %>
+    <% if (gruntcoffee || gruntTypescript || gruntBabel) { %>"grunt-contrib-concat": "^0.5.1",<% } %>
+    <% if (gruntTypescript) { %>"grunt-typescript": "^0.6.2",<% } %>
+    <% if (gruntcompass) { %>"grunt-contrib-compass": "^1.0.3",<% } %>
+    <% if (gruntLess) { %>"grunt-contrib-less": "^1.0.1",<% } %>
+    <% if (gruntBabel) { %>"grunt-babel": "^5.0.1",<% } %>
+    "grunt-cli": "^0.1.13",
+    "grunt": "^0.4.5"
+  }<% } %><% if (toolsExtension === 'gulp') { %>,
+  "dependencies": {
+    <% if (gulpRubySass) { %>"gulp-ruby-sass": "^1.0.5",<% } %>
+    <% if (gulpRubySass || gulpConcat) { %>"gulp-sourcemaps": "^1.5.2",<% } %>
+    <% if (gulpRubySass || gulpConcat) { %>"gulp-rename": "^1.2.2",<% } %>
+    <% if (gulpRubySass) { %>"gulp-watch": "^4.2.4",<% } %>
+    <% if (gulpRubySass || gulpLess) { %>"gulp-minify-css": "^1.1.6",<% } %>
+    <% if (gulpConcat || gulpBabel || gulpCoffee || gulpTypescript) { %>"gulp-concat": "^2.6.0",<% } %>
+    <% if (gulpConcat || gulpBabel || gulpCoffee || gulpTypescript) { %>"gulp-uglify": "^1.2.0",<% } %>
+    <% if (gulpLess) { %>"gulp-less": "^3.0.3",<% } %>
+    <% if (gulpBabel) { %>"gulp-babel": "^5.1.0",<% } %>
+    <% if (gulpCoffee) { %>"gulp-coffee": "^2.3.1",<% } %>
+    <% if (gulpTypescript) { %>"gulp-typescript": "^2.7.8",<% } %>
+    "gulp-util": "^3.0.6",
+    "gulp": "^3.9.0"
+  }<% } %><% if (toolsExtension === 'brunch') { %>,
+  "dependencies": {
+    <% if (lessBrunch) { %>"less-brunch": "^1.8.1",<% } %>
+    <% if (sassBrunch) { %>"sass-brunch": "^1.8.10",<% } %>
+    <% if (stylusBrunch) { %>"stylus-brunch": "^1.8.1",<% } %>
+    <% if (coffeeScriptBrunch) { %>"coffee-script-brunch": "^1.8.2",<% } %>
+    <% if (typescriptBrunch) { %>"typescript-brunch": "^0.8.1",<% } %>
+    <% if (uglifyJsBrunch) { %>"uglify-js-brunch": "^1.7.8",<% } %>
+    <% if (babelBrunch) { %>"babel-brunch": "^5.1.2",<% } %>
+    "javascript-brunch": "^1.7.1",
+    "clean-css-brunch": "^1.7.2",
+    "brunch": "^1.8.3"
+  }<% } %>
 }

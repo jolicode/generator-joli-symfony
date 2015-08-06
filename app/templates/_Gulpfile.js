@@ -1,61 +1,170 @@
-var gulp = require('gulp'),
-    gulpLoadPlugins = require('gulp-load-plugins'),
-    plugins = gulpLoadPlugins();
+var gulp = require('gulp');
+<% if (gulpRubySass) { %>var sass = require('gulp-ruby-sass');<% } %>
+<% if (gulpRubySass || gulpLess) { %>
+var sourcemaps = require('gulp-sourcemaps');
+var minifyCss = require('gulp-minify-css');
+var watch = require('gulp-watch');<% } %>
+<% if (gulpRubySass || gulpConcat || gulpLess) { %>
+var rename = require('gulp-rename');<% } %>
+<% if (gulpConcat || gulpBabel || gulpCoffee || gulpTypescript) { %>
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');<% } %>
+<% if (gulpTypescript) { %>var ts = require('gulp-typescript');<% } %>
+<% if (gulpCoffee) { %>var coffee = require('gulp-coffee');<% } %>
+<% if (gulpLess) { %>var less = require('gulp-less');<% } %>
+<% if (gulpBabel) { %>var babel = require('gulp-babel');<% } %>
+var gutil = require('gulp-util');
 
-var app = 'app/Resources';
-
-var onError = function(err) {
-    console.log(err);
+var path = {
+  app: 'app/Resources',
+  bower_components: './bower_components'
 };
-<% if (gulpRubySass) { %>
-gulp.task('Sass', function() {
-
-    gulp.src(app + '/scss/**/*.scss')
-        .pipe(plugins.plumber({
-            errorHandler: onError
-        }))
-        .pipe(plugins.rubySass({
-            compass: true,
-            style: 'compressed',
-            check: true}))
-        .pipe(plugins.minifyCss({keepSpecialComments:0}))
-        .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('web/css/'));
-});
-<% } %>
 
 <% if (gulpCopy) { %>
 gulp.task('copy', function() {
-    gulp.src(app + '/fonts/*.{ttf,woff,eof,svg,eot}')
+    gulp.src(path.app + '/assets/fonts/*.{ttf,woff,eof,svg,eot}')
         .pipe(gulp.dest('web/fonts/'));
-});
-<% } %>
-
-<% if (gulpConcat) { %>
-gulp.task('concat', function() {
-    gulp.src([
-        app + '/libs/jquery/dist/jquery.js',
-        app + '/libs/bootstrap/assets/javascripts/bootstrap.js'
-    ])
-        .pipe(plugins.concat('app.js'))
-        .pipe(plugins.uglify({mangle: true}))
-        .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('web/js/'));
-});
-<% } %>
+});<% } %>
 
 <% if (gulpRubySass) { %>
-gulp.task('watch', function() {
-    gulp.watch(app + '/scss/**/*.scss', ['Sass']);
-});
-<% } %>
+/**
+* gulp-ruby-sass
+* @see https://www.npmjs.com/package/gulp-ruby-sass
+*
+* Compile Sass to CSS using Compass.
+*/
+gulp.task('sass', function() {
 
-gulp.task('build', [
-<% if (gulpCopy) { %>'copy',<% } %>
-<% if (gulpConcat) { %>'concat',<% } %>
-<% if (gulpRubySass) { %>'Sass',<% } %>
-]);
+  return sass(path.app + '/scss', { compass: true, style: 'compressed', sourcemap: true })
+    .on('error', function (err) {
+      console.error('Error!', err.message);
+    })
+    .pipe(minifyCss({keepSpecialComments:0}))
+    .pipe(sourcemaps.write())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('web/css/'));
+});<% } %>
+
+<% if (gulpConcat) { %>
+/**
+* gulp-concat && gulp-uglify
+* @see https://www.npmjs.com/package/gulp-concat
+* @see https://www.npmjs.com/package/gulp-uglify
+*
+* Compile and minify js vendor (bower_components).
+*/
+gulp.task('vendor', function() {
+    gulp.src([
+        './bower_components/jquery/dist/jquery.js',
+        './bower_components/bootstrap/assets/javascripts/bootstrap.js'
+    ])
+    .pipe(concat('vendor.js'))
+    .pipe(uglify({mangle: true}))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('web/js/'));
+});
+
+/**
+* gulp-concat && gulp-uglify
+* @see https://www.npmjs.com/package/gulp-concat
+* @see https://www.npmjs.com/package/gulp-uglify
+*
+* Compile and minify js App (app/Resources/js).
+*/
+gulp.task('app', function() {
+    return gulp.src(path.app + '/js/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(concat('app.js'))
+    .pipe(uglify({mangle: true}).on('error', gutil.log))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('web/js/'));
+});<% } %>
+
+<% if (gulpLess) { %>
+/**
+* gulp-less
+* @see https://www.npmjs.com/package/gulp-less
+*
+* Compile Less to CSS.
+*/
+gulp.task('less', function() {
+    gulp.src(path.app + '/less/main.less')
+        .pipe(sourcemaps.init())
+        .pipe(less())
+        .pipe(minifyCss({keepSpecialComments:0}))
+        .pipe(sourcemaps.write())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('web/css/'));
+});<% } %>
+
+<% if (gulpCoffee) { %>
+/**
+* gulp-coffee
+* @see https://www.npmjs.com/package/gulp-coffee
+*
+* Compile CoffeeScript files to Javascript.
+*/
+gulp.task('coffee', function() {
+  gulp.src(path.app + '/js/*.coffee')
+    .pipe(sourcemaps.init())
+    .pipe(coffee({ bare: true })).on('error', gutil.log)
+    .pipe(concat('coffee.js'))
+    .pipe(uglify({mangle: true}).on('error', gutil.log))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('web/js/'));
+});<% } %>
+
+<% if (gulpTypescript) { %>
+/**
+* gulp-typescript
+* @see https://www.npmjs.com/package/gulp-typescript
+*
+* Compile Typescript files to Javascript.
+*/
+gulp.task('ts', function() {
+  var tsResult = gulp.src(path.app + '/js/*.ts')
+    .pipe(sourcemaps.init())
+    .pipe(ts({
+      sortOutput: true,
+      target: 'ES6', // 'ES3' (default), 'ES5' or 'ES6'.
+      module: 'commonjs' //'commonjs' or 'amd'.
+    }));
+
+  return tsResult.js
+    .pipe(concat('typescript.js'))
+    .pipe(uglify({mangle: true}).on('error', gutil.log))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('web/js/'));
+});<% } %>
+
+<% if (gulpBabel) { %>
+/**
+* gulp-babel
+* @see https://www.npmjs.com/package/gulp-babel
+*
+* Turn ES6 code into vanilla ES5 with no runtime required
+*/
+gulp.task('babel', function () {
+  return gulp.src(path.app + '/js/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(concat('babel.js'))
+    .pipe(uglify({mangle: true}).on('error', gutil.log))
+    .pipe(rename({suffix: '.min'}))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('web/js/'));
+});<% } %>
 
 gulp.task('default', [
-<% if (gulpRubySass) { %>'Sass',<% } %>
+<% if (gulpCopy) { %>'copy',<% } %>
+<% if (gulpConcat) { %>'vendor',<% } %>
+<% if (gulpConcat) { %>'app',<% } %>
+<% if (gulpBabel) { %>'babel',<% } %>
+<% if (gulpCoffee) { %>'coffee',<% } %>
+<% if (gulpTypescript) { %>'ts',<% } %>
+<% if (gulpLess) { %>'less',<% } %>
+<% if (gulpRubySass) { %>'sass'<% } %>
 ]);

@@ -1,188 +1,203 @@
-'use strict';
+"use strict";
 
 module.exports = function (grunt) {
+<% if (gruntcompass) { %>
+  grunt.loadNpmTasks('grunt-contrib-compass');<% } %>
+<% if (gruntLess || gruntcompass || gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-contrib-watch');<% } %>
+<% if (gruntTypescript || gruntcoffee || gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-uglify');<% } %>
+<% if (gruntTypescript) { %>
+  grunt.loadNpmTasks('grunt-typescript');<% } %>
+<% if (gruntcoffee) { %>
+  grunt.loadNpmTasks('grunt-contrib-coffee');<% } %>
+<% if (gruntLess) { %>
+  grunt.loadNpmTasks('grunt-contrib-less');<% } %>
+<% if (gruntLess || gruntcompass || gruntcoffee || gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-contrib-watch');<% } %>
+<% if (gruntBabel) { %>
+  grunt.loadNpmTasks('grunt-babel');<% } %>
 
-    // Load all grunt tasks
-    require('load-grunt-tasks')(grunt);
-    var app = 'app/Resources';
+  var path = {
+    app: 'app/Resources',
+    assets: 'app/Resources/assets',
+    build: 'build',
+    bower_components: './bower_components'
+  };
 
-    // Configuration
-    grunt.initConfig({
+  var libSources = [
+    //path.bower_components + '/react/react.js',
+  ];
 
-        <% if (gruntcompass) { %>
+  var sources = [
+    path.build + '/js/*.js'
+  ];
 
-        /**
-         * grunt-contrib-compass
-         * @see https://github.com/gruntjs/grunt-contrib-compass
-         *
-         * Compile Sass to CSS using Compass.
-         */
-        compass: {
-            sass: {
-                options: {
-                    sassDir: app + 'scss',
-                    cssDir: '.tmp/css',
-                    importPath: app + '/libs',
-                    outputStyle: 'expanded',
-                    noLineComments: true
-                }
-            }
-        },
-
-        <% } %>
-
-        <% if (gruntSass) { %>
-
-        /**
-         * grunt-contrib-sass
-         * @see https://github.com/gruntjs/grunt-contrib-sass
-         *
-         * Compile Sass to CSS using Sass.
-         */
+  grunt.initConfig({
+      <% if (gruntcompass) { %>
+      /**
+       * grunt-contrib-compass
+       * @see https://github.com/gruntjs/grunt-contrib-compass
+       *
+       * Compile Sass to CSS using Compass.
+       */
+      compass: {
         sass: {
-            watch: {
-                files: [{
-                    expand: true,
-                    cwd: app + 'scss',
-                    src: ['*.scss'],
-                    dest: '.tmp/css',
-                    ext: '.css'
-                }],
-                debugInfo: true,
-                lineNumbers: true,
-                noCache: true
-            },
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: app + 'scss',
-                    src: ['*.scss'],
-                    dest: '.tmp/css',
-                    ext: '.css'
-                }],
-                noCache: true
-            }
+          options: {
+            sourcemap: true,
+            sassDir: path.app + '/scss',
+            cssDir: 'web/css',
+            //importPath: path.bower_components, // Uncomment this line if the folder is present bower_components
+            imagesDir: 'images',
+            imagesPath: path.assets,
+            generatedImagesDir: 'web/images',
+            outputStyle: 'compressed',
+            noLineComments: true
+          }
+        }
+      },<% } %>
+      <% if (gruntTypescript) { %>
+      /**
+       * grunt-typescript
+       * @see https://www.npmjs.com/package/grunt-typescript
+       *
+       * Run predefined tasks whenever watched file patterns are added, changed or deleted.
+       */
+      typescript: {
+        base: {
+          src: [path.app + '/js/**/*.ts'],
+          dest: 'build/js/app.js',
+          options: {
+            module: 'commonjs', //amd or commonjs
+            target: 'es5', //or es3
+            sourceMap: true,
+            declaration: true
+            //watch: true //Detect all target files root. eg: 'path/to/typescript/files/'
+          }
+        }
+      },<% } %>
+      <% if (gruntcoffee) { %>
+      /**
+       * grunt-coffee
+       * @see https://www.npmjs.com/package/grunt-coffee
+       *
+       *  JavaScripts your Coffee
+       */
+      coffee: {
+        compileBare: {
+          options: {
+            sourceMap: true,
+            bare: true,
+            join: true
+          },
+          files: {
+            'build/js/app.js': [
+              path.app + '/js/app.coffee'
+            ]
+          }
+        }
+      },<% } %>
+      <% if (gruntcoffee || gruntTypescript || gruntBabel) { %>
+      /**
+       * grunt-contrib-uglify
+       * @see https://github.com/gruntjs/grunt-contrib-uglify
+       *
+       */
+      uglify: {
+        options: {
+          mangle: false,
+          sourceMap : true,
+          sourceMapIncludeSources : true
         },
+        all: {
+          files: {
+            'web/js/vendor.min.js': ['build/js/vendor.js'],
+            'web/js/app.min.js': ['build/js/app.js'],
+          }
+        }
+      },
 
-        <% } %>
-
-        <% if (gruntTypescript) { %>
-
-        /**
-         * grunt-typescript
-         * @see https://github.com/k-maru/grunt-typescript
-         *
-         * Run predefined tasks whenever watched file patterns are added, changed or deleted.
-         */
-        typescript: {
-            base: {
-                src: [app + 'ts/*.ts'],
-                dest: '.tmp/js',
-                options: {
-                    module: 'amd', //or commonjs
-                    target: 'es5', //or
-                    basePath: app + '/ts'
-                }
-            }
+      concat: {
+        options: {
+          sourceMap: true
         },
-
-        <% } %>
-
-        <% if (gruntcoffee) { %>
-        coffee: {
-            compile: {
-                files: {
-                    '.tmp/app.js': [
-                        'src/Acme/DemoBundle/Resources/coffee/app.coffee',
-                        'src/Acme/DemoBundle/Resources/coffee/ProjectsManager.coffee'
-                    ]
-                }
-            }
+        dist: {
+          files: [{
+            src: libSources,
+            dest: path.build + '/js/vendor.js'
+          }, {
+            src: sources,
+            dest: path.build + '/js/app.js'
+          }]
+        }
+      },<% } %>
+      <% if (gruntLess) { %>
+      /**
+       * grunt-contrib-less
+       * @see https://github.com/gruntjs/grunt-contrib-less
+       *
+       * Compile Less to CSS.
+       */
+      less: {
+        development: {
+          options: {
+            compress: true,
+            yuicompress: true,
+            optimization: 2,
+            sourceMap: true
+          },
+          files: {
+            'web/css/less.min.css': path.app + '/less/main.less'
+          }
+        }
+      },<% } %>
+      <% if (gruntBabel) { %>
+      /**
+       * grunt-babel
+       * @see https://github.com/gruntjs/grunt-babel
+       *
+       * Turn ES6 code into vanilla ES5 with no runtime required
+       */
+      babel: {
+        options: {
+          sourceMap: true
         },
+        dist: {
+          files: [{
+            cwd: path.app + '/js',
+            src: '*.js',
+            dest: 'build/js',
+            expand: true
+          }]
+        }
+      },<% } %>
+      <% if (gruntLess || gruntcompass || gruntBabel) { %>
+      /**
+       * grunt-watch
+       * @see https://github.com/gruntjs/grunt-watch
+       *
+       */
+      watch: {<% if (gruntcompass) { %>
+        scss: {
+          files: [path.app + '/scss/**/*.scss'],
+          tasks: ['css']
+        },<% } %><% if (gruntBabel) { %>
+        js: {
+          files: [path.app + '/js/**/*.js'],
+          tasks: ['js']
+        },<% } %><% if (gruntLess) { %>
+        less: {
+          files: [path.app + '/less/**/*.less'],
+          tasks: ['less']
+        }<% } %>
+      }<% } %>
+  });
 
-        <% } %>
-
-        <% if (gruntSass || gruntcompass) { %>
-
-        /**
-         * grunt-contrib-cssmin
-         * @see https://github.com/gruntjs/grunt-contrib-cssmin
-         *
-         * Run predefined tasks whenever watched file patterns are added, changed or deleted.
-         */
-        cssmin: {
-            combine: {
-                options:{
-                    report: 'gzip',
-                    keepSpecialComments: 0
-                },
-                files: {
-                    'web/built/min.css': [
-                        '.tmp/css/**/*.css',
-                        app + '/libs/brandymint-fontello/fontello-codes.css'
-                    ]
-                }
-            }
-        },
-
-        <% } %>
-
-        <% if (gruntcoffee || gruntTypescript) { %>
-
-        /**
-         * grunt-contrib-uglify
-         * @see https://github.com/gruntjs/grunt-contrib-uglify
-         *
-         * Run predefined tasks whenever watched file patterns are added, changed or deleted.
-         */
-        uglify: {
-            options: {
-                mangle: false,
-                sourceMap: true,
-                sourceMapName: 'web/built/app.map'
-            },
-            dist: {
-                files: {
-                    'web/built/app.min.js':[
-                    app + '/libs/jquery/dist/jquery.js',
-                    '.tmp/js/**/*.js'
-                    ]
-                }
-            }
-        },
-
-        <% } %>
-
-        <% if (gruntCopy) { %>
-
-        /**
-         * grunt-contrib-copy
-         * @see https://github.com/gruntjs/grunt-contrib-copy
-         *
-         * Run predefined tasks whenever watched file patterns are added, changed or deleted.
-         */
-        copy: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: app + '/libs/Fontello/fonts',
-                    dest: 'web/fonts',
-                     src: ['**']
-                }]
-            }
-        },
-
-        <% } %>
-
-    });
-
-    /****************************************************************
-     * Grunt Task Definitions
-     ****************************************************************/
-
-    <% if (gruntTypescript) { %>grunt.registerTask('javascript', ['typescript', 'uglify']);<% } %>
-    <% if (gruntcoffee) { %>grunt.registerTask('javascript', ['coffee', 'uglify']);<% } %>
-    <% if (gruntcompass) { %>grunt.registerTask('css', ['compass','cssmin']);<% } %>
-    <% if (gruntSass) { %>grunt.registerTask('css', ['sass','cssmin']);<% } %>
-    <% if (gruntCopy) { %>grunt.registerTask('cp', ['copy']);<% } %>
+  /****************************************************************
+   * Grunt Task Definitions
+   ****************************************************************/
+  grunt.registerTask('default', [<% if (gruntcoffee || gruntTypescript || gruntBabel) { %>'js',<% } %> <% if (gruntcompass || gruntLess) { %>'css'<% } %>]);
+  <% if (gruntcoffee || gruntTypescript || gruntBabel) { %>grunt.registerTask('js', [<% if (gruntBabel) { %>'babel',<% } %> <% if (gruntTypescript) { %>'typescript',<% } %><% if (gruntcoffee) { %>'coffee',<% } %> 'concat', 'uglify']);<% } %>
+  grunt.registerTask('css', [<% if (gruntcompass) { %>'compass',<% } %><% if (gruntLess) { %>'less',<% } %>]);
 };
