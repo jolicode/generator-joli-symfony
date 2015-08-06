@@ -17,8 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Removed module `load-grunt-tasks`
 - Removed module `gulp-load-plugins
 - Removed bundle `DoctrineMongoDBBundle`
-- Removed file `.bowerrc`
-all files installed with bower will stored directory `bower_component` default
+- Removed file `.bowerrc` - all files installed with bower will be stored in the default `bower_component` directory
 
 
 ### Added
@@ -26,7 +25,7 @@ all files installed with bower will stored directory `bower_component` default
 Grunt
 - Added module `grunt-less`
 - Added module `grunt-babel`
-- Added module `grunt-contrib-watch`g
+- Added module `grunt-contrib-watch`
 
 Gulp
 - Added module `gulp-less`
@@ -46,9 +45,9 @@ Brunch
 - Added module `uglify-js-brunch`
 - Added module `babel-brunch`
 
-- Added method which determines how version symfony by tag
-- Added method, check if composer is defined in the system
-- Added method, check if bower is defined in the system
+- Added method which determines symfony version by tag
+- Added method to check if composer is defined in the system
+- Added method to check if bower is defined in the system
 - Added modules npm `fs-extra`
 
 - Added files demo compilation
@@ -60,4 +59,4 @@ Brunch
 	- files `Js (export)`
 	- files `Js (Class ES6)`
 
-Added only if you choices good modules with Grunt, Gulp or Brunch
+Only added if you choose good modules with Grunt, Gulp or Brunch
