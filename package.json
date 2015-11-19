@@ -26,8 +26,5 @@
     "rimraf": "^2.4.2",
     "yeoman-generator": "^0.18.0",
     "yosay": "^0.3.0"
-  },
-  "peerDependencies": {
-    "yo": ">=1.0.0"
   }
 }
