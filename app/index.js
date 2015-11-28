@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
@@ -7,7 +7,9 @@ var yaml = require('js-yaml');
 var fs = require('fs-extra');
 var rmdir = require('rimraf');
 var child_process = require('child_process');
-var http = require("http");
+var http = require('http');
+var _ = require('lodash');
+var Download = require('download');
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -34,14 +36,12 @@ module.exports = yeoman.generators.Base.extend({
       default: true
     }];
 
-    this.prompt(prompts, function(answers) {
-
+    this.prompt(prompts, function (answers) {
       if (answers.symfonyStandard) {
         this.symfonyDistribution = this.SymfonyStandardDistribution;
       } else {
         this.symfonyDistribution = null;
       }
-
       done();
     }.bind(this));
   },
@@ -61,7 +61,7 @@ module.exports = yeoman.generators.Base.extend({
         choices: ['2.3', '2.6', '2.7']
       }];
 
-      this.prompt(prompts, function(answers) {
+      this.prompt(prompts, function (answers) {
 
         var repo = 'https://github.com/' + 'symfony' + '/' + 'symfony-standard' + '/tree/' + answers.symfonyCommit;
         console.log('Thanks! I\'ll use ' + repo);
@@ -78,40 +78,39 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  getTagSymfony: function() {
-    var version = this.symfonyDistribution.commit,
-        done = this.async();
+  getTagSymfony: function () {
+    var version = this.symfonyDistribution.commit;
+    var done = this.async();
 
-    http.get('http://symfony.com/versions.json', function(res) {
+    http.get('http://symfony.com/versions.json', function (res) {
+      var data = '';
 
-     var data = '';
+      res.on('data', function (d) {
+        data += d;
+      });
 
-     res.on('data', function(d) {
-       data += d;
-     });
+      res.on('error', function (e) {
+        console.log('Got error: ' + e.message);
+      });
 
-     res.on('error', function(e) {
-       console.log("Got error: " + e.message);
-     });
-
-     res.on('end', function() {
-       var parsed = JSON.parse(data);
-       this.symfonyDistribution.commit = parsed[version];
-       done();
-     }.bind(this));
+      res.on('end', function () {
+        var parsed = JSON.parse(data);
+        this.symfonyDistribution.commit = parsed[version];
+        done();
+      }.bind(this));
     }.bind(this));
   },
 
-  askToolsExtension: function() {
+  askToolsExtension: function () {
     var done = this.async();
     var prompts = [{
-        type: 'list',
-        name: 'toolsExtension',
-        message: 'Which tools would you like to use?',
-        default: 'gulp',
-        choices: ['grunt', 'gulp', 'brunch']
+      type: 'list',
+      name: 'toolsExtension',
+      message: 'Which tools would you like to use?',
+      default: 'gulp',
+      choices: ['grunt', 'gulp', 'brunch']
     }];
-    this.prompt(prompts, function(answers) {
+    this.prompt(prompts, function (answers) {
       this.toolsExtension = answers.toolsExtension;
       done();
     }.bind(this));
@@ -137,7 +136,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name: 'grunt-babel' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required'),
+            name: 'grunt-babel',
             value: 'gruntBabel',
             checked: true
           },
@@ -154,7 +153,7 @@ module.exports = yeoman.generators.Base.extend({
         ]
       }];
 
-      this.prompt(prompts, function(answers) {
+      this.prompt(prompts, function (answers) {
         function hasFeature(feat) {
           return answers.gruntCustom.indexOf(feat) !== -1;
         }
@@ -170,7 +169,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askGulpCustom: function() {
+  askGulpCustom: function () {
     if (this.toolsExtension === 'gulp') {
       var done = this.async();
 
@@ -180,17 +179,17 @@ module.exports = yeoman.generators.Base.extend({
         message: 'Customize Gulpfile',
         choices: [
           {
-            name: 'gulp-ruby-sass '  + chalk.yellow(' ♥ '),
+            name: 'gulp-ruby-sass',
             value: 'gulpRubySass',
             checked: true
           },
           {
-            name: 'gulp-copy' + chalk.red(' => Do not use the gulp-copy module but a task default !'),
+            name: 'gulp-copy',
             value: 'gulpCopy',
             checked: false
           },
           {
-            name: 'gulp-javascript' + chalk.yellow(' => use for javascript ES5, ES4, ES3, not ES6 !'),
+            name: 'gulp-javascript',
             value: 'gulpConcat',
             checked: false
           },
@@ -200,7 +199,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name: 'gulp-babel ' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required ♥'),
+            name: 'gulp-babel',
             value: 'gulpBabel',
             checked: true
           },
@@ -235,7 +234,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askBrunchCustom: function() {
+  askBrunchCustom: function () {
     if (this.toolsExtension === 'brunch') {
       var done = this.async();
 
@@ -250,7 +249,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: false
           },
           {
-            name:  'sass-brunch ' + chalk.yellow(' ♥ '),
+            name:  'sass-brunch',
             value: 'sassBrunch',
             checked: true
           },
@@ -275,7 +274,7 @@ module.exports = yeoman.generators.Base.extend({
             checked: true
           },
           {
-            name: 'babel-brunch' + chalk.yellow(' => Turn ES6 code into vanilla ES5 with no runtime required ♥'),
+            name: 'babel-brunch',
             value: 'babelBrunch',
             checked: true
           }
@@ -300,7 +299,7 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  askBootStrapSass: function() {
+  askBootStrapSass: function () {
     var done = this.async();
 
     var prompts = [{
@@ -316,7 +315,7 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  askbundle: function() {
+  askbundle: function () {
     var done = this.async();
 
     var prompts = [{
@@ -338,7 +337,7 @@ module.exports = yeoman.generators.Base.extend({
 
     }];
 
-    this.prompt(prompts, function(answers) {
+    this.prompt(prompts, function (answers) {
       function hasFeature(feat){
         return answers.addBundle.indexOf(feat) !== -1;
       }
@@ -349,45 +348,121 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-    symfonyBase: function() {
+  _unzip: function (archive, destination, opts, cb) {
+    if (_.isFunction(opts) && !cb) {
+      cb = opts;
+      opts = { extract: true };
+    }
+
+    opts = _.assign({ extract: true }, opts);
+
+    var log = this.log.write()
+      .info('... Fetching %s ...', archive)
+      .info(chalk.yellow('This might take a few moments'));
+
+    var download = new Download(opts)
+      .get(archive)
+      .dest(destination)
+      .use(function (res) {
+        res.on('data', function () {});
+      });
+
+    download.run(function (err) {
+      if (err) {
+        return cb (err);
+      }
+
+      log.write().ok('Done in ' + destination).write();
+      cb();
+    });
+  },
+
+  symfonyBase: function () {
     var done = this.async();
     var appPath = this.destinationRoot();
     var repo = this.symfonyDistribution.host + this.symfonyDistribution.commit  + '.' + this.symfonyDistribution.ext;
 
-    this.extract(repo, appPath, function (err, remote) {
-          if (err) {
-            return done(err);
-          } else {
-            console.log(' 👍 ' + chalk.green(' Download success ! '));
-            done();
-          }
-        }
-    );
+    this._unzip(repo, appPath, function (err, remote) {
+      if (err) {
+        return done(err);
+      } else {
+        console.log(' 👍 ' + chalk.green(' Download success ! '));
+        done();
+      }
+    });
   },
 
-  moveSymfonyBase: function() {
+  moveSymfonyBase: function () {
     var done = this.async();
     var directory = this.destinationRoot() + '/Symfony';
     this.directory(directory, '.');
     fs.move('./Symfony/', '.', function (err) {
-      if (err) return console.error(err)
-      console.log("success!");
+      done();
     });
-    done();
   },
 
-  removeSymfonyBase: function() {
+  installComposer: function () {
     var done = this.async();
-    var directory = this.destinationRoot() + '/Symfony';
-    rmdir(directory, function(error) {
-      if (null === error) {
-        console.log(' 👍 ' + chalk.yellow(' Installation Symfony success !'));
-      }
+    this.pathComposer = 'php ./composer.phar';
+    child_process.exec('php -r "readfile(\'https://getcomposer.org/installer\');" | php', function (error, stdout, stderr) {
+      console.log(chalk.green('Installing composer locally.'));
+      console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
+      console.log('');
+      done();
     });
-    done();
+  },
+
+  checkBower: function () {
+    this.globalBower = false;
+
+    if (this.bootStrapSass) {
+      var done = this.async();
+
+      child_process.execFile('bower', ['-v'], function (error, stdout, stderr) {
+        if (error !== null) {
+          var prompts = [{
+            type: 'confirm',
+            name: 'checkBower',
+            message: chalk.red('WARNING: No global bower installation found. We will install it locally if you decide to continue. Continue ?'),
+            default: true
+          }];
+          this.prompt(prompts, function (answers) {
+            if (answers.checkBower) {
+              child_process.exec('npm install -g bower', function (error, stdout, stderr) {
+                if (error !== null) {
+                  console.log('exec error: ' + error);
+                } else {
+                  console.log(chalk.green('Installing bower locally.'));
+                  console.log('See ' + chalk.yellow('http://bower.io/') + ' for more details on bower.');
+                  console.log('');
+                  this.globalBower = true;
+                  done();
+                }
+              }.bind(this));
+            } else {
+              console.log(chalk.red('Bower did not installed locally!'));
+              done();
+            }
+          }.bind(this));
+        } else {
+          this.globalBower = true;
+          done();
+        }
+      }.bind(this));
+    }
   },
 
   writing: {
+    removeSymfonyBase: function () {
+      var done = this.async();
+      var directory = this.destinationRoot() + '/Symfony';
+      rmdir(directory, function (error) {
+        if (null === error) {
+          done();
+        }
+      });
+    },
+
     app: function () {
       if (this.toolsExtension === 'grunt') {
         this.template('_Gruntfile.js', 'Gruntfile.js');
@@ -439,97 +514,30 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
 
-  checkComposer: function() {
-    var done = this.async();
-    this.globalComposer = false;
-
-    child_process.execFile('composer', ['-v'], function(error, stdout, stderr) {
-      if (error !== null) {
-        var prompts = [{
-          type: 'confirm',
-          name: 'checkComposer',
-          message: chalk.red('WARNING: No global composer installation found. We will install it locally if you decide to continue. Continue?'),
-          default: true
-        }];
-        this.prompt(prompts, function (answers) {
-          if (answers.checkComposer) {
-            // Use the secondary installation method as we cannot assume curl is installed
-            child_process.exec('php -r "readfile(\'https://getcomposer.org/installer\');" | php', function(error, stdout, stderr) {
-              console.log(chalk.green('Installing composer locally.'));
-              console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
-              console.log('');
-              this.globalComposer = true;
-              done();
-            }.bind(this));
-          } else {
-            console.log(chalk.red('Composer did not installed locally!'));
-            done();
-          }
-        }.bind(this));
-      } else {
-        this.globalComposer = true;
-        done();
-      }
-    }.bind(this));
-  },
-
-  checkBower: function() {
-    this.globalBower = false;
-
-    if (this.bootStrapSass) {
-      var done = this.async();
-
-      child_process.execFile('bower', ['-v'], function(error, stdout, stderr) {
-        if (error !== null) {
-          var prompts = [{
-            type: 'confirm',
-            name: 'checkBower',
-            message: chalk.red('WARNING: No global bower installation found. We will install it locally if you decide to continue. Continue ?'),
-            default: true
-          }];
-          this.prompt(prompts, function (answers) {
-            if (answers.checkBower) {
-              child_process.exec('npm install -g bower', function(error, stdout, stderr) {
-                console.log(chalk.green('Installing bower locally.'));
-                console.log('See ' + chalk.yellow('http://bower.io/') + ' for more details on bower.');
-                console.log('');
-                this.globalBower = true;
-                done();
-              }.bind(this));
-            } else {
-              console.log(chalk.red('Bower did not installed locally!'));
-              done();
-            }
-          }.bind(this));
-        } else {
-          this.globalBower = true;
-          done();
-        }
-      }.bind(this));
+  install: {
+    installComponents: function () {
+      this.installDependencies({
+        bower: this.globalBower,
+        npm: true,
+        skipInstall: false
+      });
     }
   },
 
   end: {
-
-    install: function () {
-      this.installDependencies({
-        bower: this.globalBower,
-        npm: true,
-        skipInstall: false,
-        callback: function () {
-          console.log(chalk.bgGreen('Everything is ready!'));
-          console.log('');
-        }
-      });
-    },
-
-    cleanComposer: function () {
-      this.spawnCommand('composer', ['remove', 'symfony/assetic-bundle']);
+    addBootStrapSass: function () {
+      if (this.bootStrapSass && this.globalBower) {
+        child_process.exec('bower install bootstrap-sass-official --save', function (error, stdout, stderr) {
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          } else {
+            console.log(chalk.green('[bootstrap-sass-official] installed!'));
+          }
+        });
+      }
     },
 
     cleanConfig: function () {
-      var done = this.async();
-
       var confDev = yaml.safeLoad(fs.readFileSync('app/config/config_dev.yml'));
       delete confDev.assetic;
       var newConfDev = yaml.dump(confDev, {indent: 4});
@@ -539,8 +547,6 @@ module.exports = yeoman.generators.Base.extend({
       delete conf.assetic;
       var newConf = yaml.dump(conf, {indent: 4});
       fs.writeFileSync('app/config/config.yml', newConf);
-
-      done();
     },
 
     updateAppKernel: function () {
@@ -551,18 +557,40 @@ module.exports = yeoman.generators.Base.extend({
       fs.writeFileSync(appKernelPath, newAppKernelContents);
     },
 
-    addBundleComposer: function() {
-      if (this.fixturebundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/doctrine-fixtures-bundle']);
-      }
-      if (this.migrationbundle) {
-        this.spawnCommand('composer', ['require', 'doctrine/doctrine-migrations-bundle']);
-      }
+    cleanComposer: function () {
+      var removeAssetic = this.pathComposer + ' remove ' + 'symfony/assetic-bundle';
+
+      child_process.exec(removeAssetic, function (error, stdout, stderr) {
+        if (error !== null) {
+          console.log('exec error: ' + error);
+        } else {
+          console.log(chalk.green('[symfony/assetic-bundle] deleted!'));
+        }
+      });
     },
 
-    addBootStrapSass: function() {
-      if (this.bootStrapSass) {
-        this.spawnCommand('bower', ['install', 'bootstrap-sass-official', '--save']);
+    addBundleComposer: function () {
+      var fixturebundle = this.pathComposer + ' require ' + 'doctrine/doctrine-fixtures-bundle';
+      var migrationbundle = this.pathComposer + ' require ' + 'doctrine/doctrine-migrations-bundle';
+
+      if (this.fixturebundle) {
+        child_process.exec(fixturebundle, function (error, stdout, stderr) {
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          } else {
+            console.log(chalk.green('[doctrine-fixtures-bundle] installed!'));
+          }
+        });
+      }
+
+      if (this.migrationbundle) {
+        child_process.exec(migrationbundle, function (error, stdout, stderr) {
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          } else {
+            console.log(chalk.green('[doctrine-migrations-bundle] installed!'));
+          }
+        });
       }
     }
   }
