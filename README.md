@@ -67,7 +67,7 @@ Optional dependencies :
 * Installs Symfony
 * Removes Assetic
  * Only if using grunt-less or grunt-babel or grunt-compass: **(grunt-contrib-watch)**
- * Only if using grunt-typescript or grunt-coffeee or grunt-babel : **(grunt-uglify)**
+ * Only if using grunt-typescript or grunt-coffee or grunt-babel : **(grunt-uglify)**
  * Only if using gulp-ruby-sass **(gulp-watch)**
  * Only if using gulp-ruby-sass or gulp-javascript **(gulp-rename, gulp-sourcemaps)**
  * Only if using gulp-ruby-sass or gulp-less **(gulp-minify-css)**

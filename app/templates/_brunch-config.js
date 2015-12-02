@@ -18,7 +18,7 @@ exports.config = {
   },
   conventions: {
     ignored: [
-      /\/_/, // File begining by "_" like _settings.scss
+      /\/_/, // File beginning by "_" like _settings.scss
       // Brunch does include all Bower components by default, we blacklist unneeded ones.
       //'bower_components/foundation/'
     ],
