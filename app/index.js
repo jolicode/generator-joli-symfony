@@ -66,7 +66,7 @@ module.exports = yeoman.generators.Base.extend({
         this.versionSf2 = filtered.filter(filterByTag);
         done();
       } else {
-        console.log(chalk.red('A problem occurred'));
+        console.log(chalk.red('A problem occurred'), error);
       }
     }.bind(this));
   },
