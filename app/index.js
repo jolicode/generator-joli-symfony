@@ -310,39 +310,6 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  askbundle: function () {
-    var done = this.async();
-
-    var prompts = [{
-      type: 'checkbox',
-      name: 'addBundle',
-      message: 'Which bundle would you like to use?',
-      choices: [
-      {
-        name: 'DoctrineFixturesBundle',
-        value: 'fixturebundle',
-        checked: true
-      },
-      {
-        name: 'DoctrineMigrationsBundle',
-        value: 'migrationbundle',
-        checked: false
-      }
-      ]
-
-    }];
-
-    this.prompt(prompts, function (answers) {
-      function hasFeature(feat){
-        return answers.addBundle.indexOf(feat) !== -1;
-      }
-
-      this.fixturebundle = hasFeature('fixturebundle');
-      this.migrationbundle = hasFeature('migrationbundle');
-      done();
-    }.bind(this));
-  },
-
   _unzip: function (archive, destination, opts, cb) {
     if (_.isFunction(opts) && !cb) {
       cb = opts;
@@ -566,30 +533,5 @@ module.exports = yeoman.generators.Base.extend({
         }
       });
     },
-
-    addBundleComposer: function () {
-      var fixturebundle = this.pathComposer + ' require ' + 'doctrine/doctrine-fixtures-bundle';
-      var migrationbundle = this.pathComposer + ' require ' + 'doctrine/doctrine-migrations-bundle';
-
-      if (this.fixturebundle) {
-        child_process.exec(fixturebundle, function (error, stdout, stderr) {
-          if (error !== null) {
-            console.log('exec error: ' + error);
-          } else {
-            console.log(chalk.green('[doctrine-fixtures-bundle] installed!'));
-          }
-        });
-      }
-
-      if (this.migrationbundle) {
-        child_process.exec(migrationbundle, function (error, stdout, stderr) {
-          if (error !== null) {
-            console.log('exec error: ' + error);
-          } else {
-            console.log(chalk.green('[doctrine-migrations-bundle] installed!'));
-          }
-        });
-      }
-    }
   }
 });
