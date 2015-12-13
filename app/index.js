@@ -7,7 +7,7 @@ var yaml = require('js-yaml');
 var fs = require('fs-extra');
 var rmdir = require('rimraf');
 var child_process = require('child_process');
-var http = require('http');
+var request = require('request');
 var _ = require('lodash');
 var Download = require('download');
 
@@ -24,7 +24,7 @@ module.exports = yeoman.generators.Base.extend({
     var done = this.async();
 
     this.SymfonyStandardDistribution = {
-      host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
+      host: 'https://symfony.com/download?v=Symfony_Standard_Vendors_',
       commit: 'lts',
       ext: 'zip'
     };
@@ -48,36 +48,26 @@ module.exports = yeoman.generators.Base.extend({
 
   getTagSymfony: function () {
     var done = this.async();
+    var invalidEntries = 0;
 
-    http.get('http://symfony.com/versions.json', function (res) {
-      var data = '';
+    function filterByTag(obj) {
+      if ('installable' === obj || 'non_installable' === obj) {
+        invalidEntries++;
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-      res.on('data', function (d) {
-        data += d;
-      });
-
-      res.on('error', function (e) {
-        console.log('Got error: ' + e.message);
-      });
-
-      res.on('end', function () {
-        this.parsed = JSON.parse(data);
+    request('https://symfony.com/versions.json', function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        this.parsed = JSON.parse(body);
         var filtered = Object.keys(this.parsed);
-        var invalidEntries = 0;
-
-        function filterByTag(obj) {
-          if ('installable' === obj || 'non_installable' === obj) {
-            invalidEntries++;
-            return false;
-          } else {
-            return true;
-          }
-        }
-
         this.versionSf2 = filtered.filter(filterByTag);
-
         done();
-      }.bind(this));
+      } else {
+        console.log(chalk.red('A problem occurred'));
+      }
     }.bind(this));
   },
 
@@ -96,7 +86,7 @@ module.exports = yeoman.generators.Base.extend({
 
       this.prompt(prompts, function (answers) {
         this.symfonyDistribution = {
-          host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
+          host: 'https://symfony.com/download?v=Symfony_Standard_Vendors_',
           commit: answers.symfonyCommit,
           ext: 'zip'
         };
