@@ -9,18 +9,16 @@ It will create a new Symfony project, remove Assetic and replace it with either 
 
 ### Demo
 
-![](http://i.imgur.com/idCv3zq.gif)
+![](http://i.imgur.com/qPMgBMv.gif)
 
 ## Dependencies
 
 Mandatory dependencies :
 
-- [composer](https://getcomposer.org/download/)
 - [npm](http://nodejs.org/)
 - [yo](http://yeoman.io/)
 - [gulp](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started)
 - [grunt](http://gruntjs.com/getting-started)
-- [bower](http://bower.io/#install-bower)
 - [brunch](http://brunch.io/)
 
 Optional dependencies :
@@ -32,9 +30,7 @@ Optional dependencies :
 ## What you can choose
 
 * Symfony 2 Standard Edition:
- * [2.3](https://github.com/symfony/symfony-standard/tree/2.3)
- * [2.6](https://github.com/symfony/symfony-standard/tree/2.6)
- * [2.7](https://github.com/symfony/symfony-standard/tree/2.7)
+ * The list of versions of symfony is available [here](https://symfony.com/versions.json)
 * Grunt:
  * [grunt-compass](https://github.com/gruntjs/grunt-contrib-compass)
  * [grunt-less](https://github.com/gruntjs/grunt-contrib-less)
@@ -57,22 +53,19 @@ Optional dependencies :
  * [typescript-brunch](https://github.com/joshheyse/typescript-brunch)
  * [uglify-js-brunch](https://github.com/brunch/uglify-js-brunch)
  * [babel-brunch](https://github.com/babel/babel-brunch)
-* Symfony2 Bundle:
- * [DoctrineFixturesBundle](https://github.com/doctrine/DoctrineFixturesBundle)
- * [DoctrineMigrationsBundle](https://github.com/doctrine/DoctrineMigrationsBundle)
 * Bootstrap-sass-official
 
 ## Default workflow
 
 * Installs Symfony
-* Removes Assetic
+* Removes Assetic for versions lower than 2.8
  * Only if using grunt-less or grunt-babel or grunt-compass: **(grunt-contrib-watch)**
  * Only if using grunt-typescript or grunt-coffee or grunt-babel : **(grunt-uglify)**
  * Only if using gulp-ruby-sass **(gulp-watch)**
  * Only if using gulp-ruby-sass or gulp-javascript **(gulp-rename, gulp-sourcemaps)**
  * Only if using gulp-ruby-sass or gulp-less **(gulp-minify-css)**
  * Only if using gulp-javascript or gulp-coffee or gulp-typescript or gulp-babel **(gulp-uglify, gulp-concat)**
-* Starts the automatic execution of `bower`, `npm` and `composer` after scaffolding has finished.
+* Starts the automatic execution of `bower` and `npm` after scaffolding has finished.
 
 ## Assets location
 
