@@ -7,7 +7,7 @@ var yaml = require('js-yaml');
 var fs = require('fs-extra');
 var rmdir = require('rimraf');
 var child_process = require('child_process');
-var http = require('http');
+var request = require('request');
 var _ = require('lodash');
 var Download = require('download');
 
@@ -24,8 +24,8 @@ module.exports = yeoman.generators.Base.extend({
     var done = this.async();
 
     this.SymfonyStandardDistribution = {
-      host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
-      commit: '2.7',
+      host: 'https://symfony.com/download?v=Symfony_Standard_Vendors_',
+      commit: 'lts',
       ext: 'zip'
     };
 
@@ -46,29 +46,47 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
+  getTagSymfony: function () {
+    var done = this.async();
+    var invalidEntries = 0;
+
+    function filterByTag(obj) {
+      if ('installable' === obj || 'non_installable' === obj) {
+        invalidEntries++;
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    request('https://symfony.com/versions.json', function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        this.parsed = JSON.parse(body);
+        var filtered = Object.keys(this.parsed);
+        this.versionSf2 = filtered.filter(filterByTag);
+        done();
+      } else {
+        console.log(chalk.red('A problem occurred'));
+      }
+    }.bind(this));
+  },
+
   askSymfonyCustom: function () {
     if (this.symfonyDistribution === null) {
       var done = this.async();
-
       console.log('Please provide GitHub details of the Symfony distribution you would like to use.');
-      console.log('e.g. http://github.com/symfony/symfony-standard/tree/[commit].');
 
       var prompts = [{
         type: 'list',
         name: 'symfonyCommit',
         message: 'Commit (commit/branch/tag)',
-        default: '2.7',
-        choices: ['2.3', '2.6', '2.7']
+        default: 'lts',
+        choices: this.versionSf2
       }];
 
       this.prompt(prompts, function (answers) {
-
-        var repo = 'https://github.com/' + 'symfony' + '/' + 'symfony-standard' + '/tree/' + answers.symfonyCommit;
-        console.log('Thanks! I\'ll use ' + repo);
-        console.log('');
-
         this.symfonyDistribution = {
-          host: 'http://symfony.com/download?v=Symfony_Standard_Vendors_',
+          host: 'https://symfony.com/download?v=Symfony_Standard_Vendors_',
           commit: answers.symfonyCommit,
           ext: 'zip'
         };
@@ -76,29 +94,6 @@ module.exports = yeoman.generators.Base.extend({
         done();
       }.bind(this));
     }
-  },
-
-  getTagSymfony: function () {
-    var version = this.symfonyDistribution.commit;
-    var done = this.async();
-
-    http.get('http://symfony.com/versions.json', function (res) {
-      var data = '';
-
-      res.on('data', function (d) {
-        data += d;
-      });
-
-      res.on('error', function (e) {
-        console.log('Got error: ' + e.message);
-      });
-
-      res.on('end', function () {
-        var parsed = JSON.parse(data);
-        this.symfonyDistribution.commit = parsed[version];
-        done();
-      }.bind(this));
-    }.bind(this));
   },
 
   askToolsExtension: function () {
@@ -379,12 +374,15 @@ module.exports = yeoman.generators.Base.extend({
 
   symfonyBase: function () {
     var done = this.async();
+    var symfonyCommit = this.parsed[this.symfonyDistribution.commit];
+
     var appPath = this.destinationRoot();
-    var repo = this.symfonyDistribution.host + this.symfonyDistribution.commit  + '.' + this.symfonyDistribution.ext;
+    var repo = this.symfonyDistribution.host + symfonyCommit  + '.' + this.symfonyDistribution.ext;
 
     this._unzip(repo, appPath, function (err, remote) {
       if (err) {
-        return done(err);
+        console.log(err);
+        return;
       } else {
         console.log(' 👍 ' + chalk.green(' Download success ! '));
         done();
