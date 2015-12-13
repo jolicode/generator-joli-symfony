@@ -366,15 +366,23 @@ module.exports = yeoman.generators.Base.extend({
     });
   },
 
+  symfonyWithAsseticInstalled: function () {
+    var symfonyVersionAssetic = ['2.3', '2.6', '2.7'];
+    var checkVersion = symfonyVersionAssetic.indexOf(this.symfonyDistribution.commit);
+    this.symfonyWithAssetic = (checkVersion !== -1) ? true : false ;
+  },
+
   installComposer: function () {
-    var done = this.async();
-    this.pathComposer = 'php ./composer.phar';
-    child_process.exec('php -r "readfile(\'https://getcomposer.org/installer\');" | php', function (error, stdout, stderr) {
-      console.log(chalk.green('Installing composer locally.'));
-      console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
-      console.log('');
-      done();
-    });
+    if (this.symfonyWithAssetic) {
+      var done = this.async();
+      this.pathComposer = 'php ./composer.phar';
+      child_process.exec('php -r "readfile(\'https://getcomposer.org/installer\');" | php', function (error, stdout, stderr) {
+        console.log(chalk.green('Installing composer locally.'));
+        console.log('See ' + chalk.yellow('http://getcomposer.org')  + ' for more details on composer.');
+        console.log('');
+        done();
+      });
+    }
   },
 
   checkBower: function () {
@@ -503,35 +511,41 @@ module.exports = yeoman.generators.Base.extend({
     },
 
     cleanConfig: function () {
-      var confDev = yaml.safeLoad(fs.readFileSync('app/config/config_dev.yml'));
-      delete confDev.assetic;
-      var newConfDev = yaml.dump(confDev, {indent: 4});
-      fs.writeFileSync('app/config/config_dev.yml', newConfDev);
+      if (this.symfonyWithAssetic) {
+        var confDev = yaml.safeLoad(fs.readFileSync('app/config/config_dev.yml'));
+        delete confDev.assetic;
+        var newConfDev = yaml.dump(confDev, {indent: 4});
+        fs.writeFileSync('app/config/config_dev.yml', newConfDev);
 
-      var conf = yaml.safeLoad(fs.readFileSync('app/config/config.yml'));
-      delete conf.assetic;
-      var newConf = yaml.dump(conf, {indent: 4});
-      fs.writeFileSync('app/config/config.yml', newConf);
+        var conf = yaml.safeLoad(fs.readFileSync('app/config/config.yml'));
+        delete conf.assetic;
+        var newConf = yaml.dump(conf, {indent: 4});
+        fs.writeFileSync('app/config/config.yml', newConf);
+      }
     },
 
     updateAppKernel: function () {
-      var appKernelPath = 'app/AppKernel.php';
-      var appKernelContents = this.readFileAsString(appKernelPath);
+      if (this.symfonyWithAssetic) {
+        var appKernelPath = 'app/AppKernel.php';
+        var appKernelContents = this.readFileAsString(appKernelPath);
 
-      var newAppKernelContents = appKernelContents.replace('new Symfony\\Bundle\\AsseticBundle\\AsseticBundle(),', '');
-      fs.writeFileSync(appKernelPath, newAppKernelContents);
+        var newAppKernelContents = appKernelContents.replace('new Symfony\\Bundle\\AsseticBundle\\AsseticBundle(),', '');
+        fs.writeFileSync(appKernelPath, newAppKernelContents);
+      }
     },
 
     cleanComposer: function () {
-      var removeAssetic = this.pathComposer + ' remove ' + 'symfony/assetic-bundle';
+      if (this.symfonyWithAssetic) {
+        var removeAssetic = this.pathComposer + ' remove ' + 'symfony/assetic-bundle';
 
-      child_process.exec(removeAssetic, function (error, stdout, stderr) {
-        if (error !== null) {
-          console.log('exec error: ' + error);
-        } else {
-          console.log(chalk.green('[symfony/assetic-bundle] deleted!'));
-        }
-      });
+        child_process.exec(removeAssetic, function (error, stdout, stderr) {
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          } else {
+            console.log(chalk.green('[symfony/assetic-bundle] deleted!'));
+          }
+        });
+      }
     },
   }
 });
