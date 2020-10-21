@@ -3,6 +3,8 @@ JoliSymfony - Symfony2
 [![NPM Version](https://img.shields.io/npm/v/generator-joli-symfony.svg?style=flat-square)](https://www.npmjs.com/package/generator-joli-symfony)
 [![Download Month](https://img.shields.io/npm/dm/generator-joli-symfony.svg?style=flat-square)](https://www.npmjs.com/package/generator-joli-symfony)
 
+# /!\ This project is no longer maintained, use at your own risks
+
 generator-joli-symfony is a [Yeoman Generator](http://yeoman.io/generators/) to scaffold Symfony2 projects with sensible defaults, common bundles and frontend tools.
 
 It will create a new Symfony project, remove Assetic and replace it with either Gulp, Grunt or Brunch.
